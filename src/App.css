@@ -688,64 +688,16 @@ a {
   position: fixed;
   inset: 0;
   z-index: 80;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 40px 24px calc(40px + env(safe-area-inset-bottom));
-  text-align: center;
-  color: #fff;
-  background: linear-gradient(180deg, #2a2e57 0%, #1c1f40 60%, #15182f 100%);
-  animation: fade-in 400ms ease-out both;
+  background: #1c1f40;
+  animation: fade-in 300ms ease-out both;
 }
 
-.splash-portrait {
-  width: 150px;
-  height: auto;
-  border-radius: 10px;
-  margin-bottom: 6px;
-}
-
-.splash-logo {
-  font-size: 42px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-}
-
-.splash-logo span {
-  color: #3fc1c9;
-}
-
-.splash-title {
-  margin: 4px 0 0;
-  font-size: 22px;
-  font-weight: 800;
-}
-
-.splash-sub {
-  margin: 0;
-  max-width: 280px;
-  font-size: 13px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.splash-powered {
-  position: absolute;
-  bottom: calc(34px + env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.55);
-}
-
-.splash-powered strong {
-  font-size: 18px;
-  color: #fff;
+.splash img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 /* ===== PIN keypad ===== */

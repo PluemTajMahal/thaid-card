@@ -145,16 +145,7 @@ function App() {
     <>
     {showSplash && (
       <div className="splash" role="status" aria-label="ThaiD">
-        <img className="splash-portrait" src="/assets/splash-portrait.png" alt="" />
-        <div className="splash-logo">
-          Thai<span>D</span>
-        </div>
-        <h2 className="splash-title">สถิตอยู่ในใจตราบนิรันดร์</h2>
-        <p className="splash-sub">น้อมสำนึกในพระมหากรุณาธิคุณอันหาที่สุดมิได้</p>
-        <div className="splash-powered">
-          <span>POWERED BY</span>
-          <strong>Digital</strong>
-        </div>
+        <img src="/assets/splash-full.png" alt="ThaiD" />
       </div>
     )}
 
