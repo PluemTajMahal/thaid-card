@@ -59,7 +59,7 @@ a {
 
 .hero {
   height: 515px;
-  padding-top: 24px;
+  padding-top: calc(24px + env(safe-area-inset-top));
   background: var(--blue);
 }
 
@@ -452,8 +452,8 @@ a {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   align-items: start;
-  height: 162px;
-  padding: 19px 23px 0;
+  height: calc(162px + env(safe-area-inset-bottom));
+  padding: 19px 23px env(safe-area-inset-bottom);
   border-top: 1px solid #d7d7db;
   background: #fff;
 }

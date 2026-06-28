@@ -65,7 +65,7 @@ function App() {
     const DESIGN_WIDTH = 612;
     const fit = () => {
       const width = document.documentElement.clientWidth;
-      phone.style.zoom = Math.min(width / DESIGN_WIDTH, 1) * 0.92;
+      phone.style.zoom = Math.min(width / DESIGN_WIDTH, 1);
     };
 
     fit();
