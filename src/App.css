@@ -58,7 +58,7 @@ a {
 }
 
 .hero {
-  height: 515px;
+  height: calc(515px + env(safe-area-inset-top));
   padding-top: calc(24px + env(safe-area-inset-top));
   background: var(--blue);
 }
