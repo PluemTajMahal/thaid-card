@@ -4,10 +4,12 @@ import {
   ChevronLeft,
   CheckSquare,
   ChevronRight,
+  Delete,
   FileText,
   History,
   Home,
   IdCard,
+  Lock,
   Maximize2,
   MessageCircle,
   Power,
@@ -49,6 +51,12 @@ function App() {
   const [expandedSide, setExpandedSide] = useState("front");
   const [activeTab, setActiveTab] = useState("scan");
   const [bannerIndex, setBannerIndex] = useState(0);
+  const [showSplash, setShowSplash] = useState(true);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [showPin, setShowPin] = useState(false);
+  const [pin, setPin] = useState("");
+
+  const PIN_LENGTH = 6;
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -56,6 +64,11 @@ function App() {
     }, 2800);
 
     return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setShowSplash(false), 2600);
+    return () => window.clearTimeout(timer);
   }, []);
 
   useEffect(() => {
@@ -98,8 +111,53 @@ function App() {
     setBannerIndex((index) => (index + 1) % banners.length);
   };
 
+  const openPin = () => {
+    setPin("");
+    setShowPin(true);
+  };
+
+  const closePin = () => {
+    setShowPin(false);
+    setPin("");
+  };
+
+  const pressDigit = (digit) => {
+    setPin((current) => {
+      if (current.length >= PIN_LENGTH) return current;
+      const next = current + digit;
+      if (next.length === PIN_LENGTH) {
+        // mock: ใส่ครบ 6 หลักก็ปลดล็อก
+        window.setTimeout(() => {
+          setIsUnlocked(true);
+          setShowPin(false);
+          setPin("");
+        }, 200);
+      }
+      return next;
+    });
+  };
+
+  const pressBackspace = () => {
+    setPin((current) => current.slice(0, -1));
+  };
+
   return (
     <>
+    {showSplash && (
+      <div className="splash" role="status" aria-label="ThaiD">
+        <img className="splash-portrait" src="/assets/splash-portrait.png" alt="" />
+        <div className="splash-logo">
+          Thai<span>D</span>
+        </div>
+        <h2 className="splash-title">สถิตอยู่ในใจตราบนิรันดร์</h2>
+        <p className="splash-sub">น้อมสำนึกในพระมหากรุณาธิคุณอันหาที่สุดมิได้</p>
+        <div className="splash-powered">
+          <span>POWERED BY</span>
+          <strong>Digital</strong>
+        </div>
+      </div>
+    )}
+
     <main className="phone" aria-label="ThaiD React screen">
       <div className="scroll-area">
       <section className="hero">
@@ -123,18 +181,29 @@ function App() {
           </div>
         </header>
 
-        <button
-          className={`card-shell ${isFlipped ? "is-flipped" : ""}`}
-          type="button"
-          aria-label="สลับด้านบัตร"
-          aria-pressed={isFlipped}
-          onClick={() => setIsFlipped((value) => !value)}
-        >
-          <span className="card-inner">
-            <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
-            <img className="card-face card-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชน" />
-          </span>
-        </button>
+        <div className="card-zone">
+          <button
+            className={`card-shell ${isFlipped ? "is-flipped" : ""} ${isUnlocked ? "" : "is-locked"}`}
+            type="button"
+            aria-label={isUnlocked ? "สลับด้านบัตร" : "คลิกเพื่อแสดงข้อมูล"}
+            aria-pressed={isFlipped}
+            onClick={() => (isUnlocked ? setIsFlipped((value) => !value) : openPin())}
+          >
+            <span className="card-inner">
+              <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
+              <img className="card-face card-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชน" />
+            </span>
+          </button>
+
+          {!isUnlocked && (
+            <button className="card-lock" type="button" onClick={openPin}>
+              <span className="lock-badge">
+                <Lock size={32} />
+              </span>
+              <span className="lock-text">คลิกเพื่อแสดงข้อมูล</span>
+            </button>
+          )}
+        </div>
 
         <div className="quick-actions" aria-label="Card actions">
           <button className="circle-action" type="button" aria-label="ข้อมูลบุคคล">
@@ -259,6 +328,36 @@ function App() {
             </span>
           </button>
         </section>
+      )}
+
+      {showPin && (
+        <div className="pin-overlay" onClick={closePin}>
+          <div className="pin-sheet" onClick={(event) => event.stopPropagation()}>
+            <h2>ระบุรหัสผ่าน</h2>
+            <div className="pin-dots">
+              {Array.from({ length: PIN_LENGTH }).map((_, index) => (
+                <span key={index} className={index < pin.length ? "filled" : ""} />
+              ))}
+            </div>
+            <div className="pin-pad">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
+                <button key={number} type="button" onClick={() => pressDigit(String(number))}>
+                  {number}
+                </button>
+              ))}
+              <span className="pin-spacer" />
+              <button type="button" onClick={() => pressDigit("0")}>
+                0
+              </button>
+              <button className="pin-back" type="button" aria-label="ลบ" onClick={pressBackspace}>
+                <Delete size={30} />
+              </button>
+            </div>
+            <button className="pin-forgot" type="button">
+              ลืมรหัสผ่าน
+            </button>
+          </div>
+        </div>
       )}
     </>
   );
