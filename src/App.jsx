@@ -25,6 +25,18 @@ const cardImages = {
   back: "/assets/id-card-back.png",
 };
 
+// ตำแหน่งตราโฮโลแกรม 8 ดวง (x,y = % กลางดวง, size = % ของความกว้างบัตร)
+const holoSeals = [
+  { x: 16, y: 20, size: 19 },
+  { x: 40, y: 14, size: 16 },
+  { x: 64, y: 21, size: 18 },
+  { x: 88, y: 27, size: 15 },
+  { x: 25, y: 55, size: 18 },
+  { x: 53, y: 50, size: 20 },
+  { x: 79, y: 58, size: 16 },
+  { x: 44, y: 83, size: 17 },
+];
+
 const services = [
   { icon: IdCard, label: "ตรวจสอบ\nคำขอ" },
   { icon: CheckSquare, label: "การรับรอง\nเอกสาร" },
@@ -221,7 +233,17 @@ function App() {
           >
             <span className="card-inner">
               <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
-              {isUnlocked && <span className="holo-emblem" aria-hidden="true" />}
+              {isUnlocked && (
+                <span className="holo-layer" aria-hidden="true">
+                  {holoSeals.map((seal, index) => (
+                    <span
+                      key={index}
+                      className="holo-seal"
+                      style={{ left: `${seal.x}%`, top: `${seal.y}%`, width: `${seal.size}%` }}
+                    />
+                  ))}
+                </span>
+              )}
               <img className="card-face card-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชน" />
             </span>
           </button>
@@ -235,6 +257,8 @@ function App() {
             </button>
           )}
         </div>
+
+        <p className="card-dept">กรมการปกครอง</p>
 
         <div className="quick-actions" aria-label="Card actions">
           <button className="circle-action" type="button" aria-label="ข้อมูลบุคคล">

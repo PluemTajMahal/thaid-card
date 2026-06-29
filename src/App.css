@@ -58,9 +58,18 @@ a {
 }
 
 .hero {
-  height: calc(515px + env(safe-area-inset-top));
+  height: calc(556px + env(safe-area-inset-top));
   padding-top: calc(24px + env(safe-area-inset-top));
   background: var(--blue);
+}
+
+.card-dept {
+  margin: 12px 0 0;
+  text-align: center;
+  color: #fff;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: 1px;
 }
 
 .profile-row {
@@ -690,33 +699,36 @@ a {
   initial-value: 0deg;
 }
 
-.holo-emblem {
+.holo-layer {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 58%;
-  aspect-ratio: 1;
-  transform: translate(-50%, -50%);
+  inset: 0;
   pointer-events: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+}
+
+.holo-seal {
+  position: absolute;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
   -webkit-mask: url("/assets/emblem-holo.png") center / contain no-repeat;
   mask: url("/assets/emblem-holo.png") center / contain no-repeat;
-  background: conic-gradient(
+  background-color: #6e2b33;
+  background-image: conic-gradient(
     from var(--holo-angle, 0deg),
-    #ff2d8a,
-    #ff8a00,
-    #ffe600,
-    #2dffb0,
-    #00b3ff,
-    #8a5cff,
-    #ff2d8a
+    rgba(255, 45, 138, 0.85),
+    rgba(255, 138, 0, 0.85),
+    rgba(255, 230, 0, 0.85),
+    rgba(45, 255, 176, 0.85),
+    rgba(0, 179, 255, 0.85),
+    rgba(138, 92, 255, 0.85),
+    rgba(255, 45, 138, 0.85)
   );
   background-size: 230% 230%;
   background-position: var(--holo-x, 50%) var(--holo-y, 50%);
-  filter: saturate(1.8) brightness(1.2) hue-rotate(var(--holo-hue, 0deg));
-  mix-blend-mode: screen;
-  opacity: 0.9;
+  filter: saturate(1.7) hue-rotate(var(--holo-hue, 0deg));
+  mix-blend-mode: overlay;
+  opacity: 0.55;
   animation: holo-spin 9s linear infinite;
 }
 
