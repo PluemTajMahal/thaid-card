@@ -96,7 +96,7 @@ function App() {
     };
 
     const loop = () => {
-      drift += 0.22; // ไหลเองช้าๆ (~13°/วินาที)
+      drift += 0.42; // ไหลเองต่อเนื่อง (~25°/วินาที)
       const target = drift + tiltTarget;
       current += (target - current) * 0.06; // lerp ให้เปลี่ยนเนียน
       root.style.setProperty("--holo-hue", `${current}deg`);
