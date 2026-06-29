@@ -731,7 +731,7 @@ a {
   background-size: 440% 440%;
   background-repeat: no-repeat;
   background-position: var(--holo-x, 50%) var(--holo-y, 50%);
-  filter: saturate(2.1) contrast(1.35) brightness(0.68);
+  filter: saturate(2.1) contrast(1.4) brightness(0.55);
   opacity: 0.5;
 }
 
