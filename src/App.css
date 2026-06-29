@@ -718,9 +718,9 @@ a {
     #b85cf0,
     #ff4d8f
   );
-  background-size: 220% 220%;
-  background-repeat: repeat;
-  background-position: var(--holo-x, 0%) var(--holo-y, 50%);
+  background-size: 360% 360%;
+  background-repeat: no-repeat;
+  background-position: var(--holo-x, 50%) var(--holo-y, 50%);
   filter: saturate(1.6) contrast(1.2) brightness(0.9);
   opacity: 0.4;
 }

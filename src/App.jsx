@@ -82,7 +82,7 @@ function App() {
     let tiltY = 0; // (หน้า-หลัง)
     let smX = 0; // smooth tilt
     let smY = 0;
-    let sweep = 0; // ไล่สีเลื่อนกวาดเองต่อเนื่อง
+    let phase = 0; // มุมแกว่งไล่สี (ไม่มีรอยต่อ)
     let glare = 0; // แถบแสงวาบ
     let raf = 0;
 
@@ -99,11 +99,13 @@ function App() {
     };
 
     const loop = () => {
-      sweep += 0.4; // แถบสีเลื่อนกวาดต่อเนื่อง
+      phase += 0.011; // แกว่งไล่สีไปมาช้าๆ (ไม่มีรอยต่อ/เส้น)
       smX += (tiltX - smX) * 0.07; // lerp ให้เนียน
       smY += (tiltY - smY) * 0.07;
-      root.style.setProperty("--holo-x", `${(sweep + smX) % 220}%`);
-      root.style.setProperty("--holo-y", `${50 + smY}%`);
+      const x = 50 + 42 * Math.sin(phase) + smX * 0.4;
+      const y = 50 + 26 * Math.sin(phase * 0.66) + smY * 0.4;
+      root.style.setProperty("--holo-x", `${x}%`);
+      root.style.setProperty("--holo-y", `${y}%`);
       glare += 0.22; // แสงนุ่มกวาดช้าๆ
       root.style.setProperty("--sheen-x", `${glare % 230}%`);
       raf = window.requestAnimationFrame(loop);
