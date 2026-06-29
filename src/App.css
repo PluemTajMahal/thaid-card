@@ -170,7 +170,7 @@ a {
   height: 100%;
   border-radius: inherit;
   transform-style: preserve-3d;
-  transition: transform 980ms cubic-bezier(0.2, 0.78, 0.18, 1);
+  transition: transform 1000ms cubic-bezier(0.2, 0.78, 0.18, 1);
 }
 
 .card-shell.is-flipped .card-inner {
@@ -583,7 +583,7 @@ a {
   height: 100%;
   border-radius: inherit;
   transform-style: preserve-3d;
-  transition: transform 860ms cubic-bezier(0.2, 0.78, 0.18, 1);
+  transition: transform 1000ms cubic-bezier(0.2, 0.78, 0.18, 1);
 }
 
 .expanded-card.show-back .expanded-card-inner {

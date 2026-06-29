@@ -47,6 +47,7 @@ const tabs = [
 
 function App() {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [isFlipping, setIsFlipping] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [expandedSide, setExpandedSide] = useState("front");
   const [activeTab, setActiveTab] = useState("scan");
@@ -144,8 +145,20 @@ function App() {
     setIsExpanded(false);
   };
 
+  const FLIP_MS = 1000; // เวลาหมุนบัตร 1 วินาที
+
+  const flipCard = () => {
+    if (isFlipping) return; // กำลังหมุนอยู่ กดซ้ำไม่ได้
+    setIsFlipping(true);
+    setIsFlipped((value) => !value);
+    window.setTimeout(() => setIsFlipping(false), FLIP_MS);
+  };
+
   const rotateExpandedCard = () => {
+    if (isFlipping) return;
+    setIsFlipping(true);
     setExpandedSide((side) => (side === "front" ? "back" : "front"));
+    window.setTimeout(() => setIsFlipping(false), FLIP_MS);
   };
 
   const showPreviousBanner = () => {
@@ -232,7 +245,7 @@ function App() {
             type="button"
             aria-label={isUnlocked ? "สลับด้านบัตร" : "คลิกเพื่อแสดงข้อมูล"}
             aria-pressed={isFlipped}
-            onClick={() => (isUnlocked ? setIsFlipped((value) => !value) : openPin())}
+            onClick={() => (isUnlocked ? flipCard() : openPin())}
           >
             <span className="card-inner">
               <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
