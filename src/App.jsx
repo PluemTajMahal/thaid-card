@@ -25,16 +25,16 @@ const cardImages = {
   back: "/assets/id-card-back.png",
 };
 
-// ตำแหน่งตราโฮโลแกรม 8 ดวง (x,y = % กลางดวง, size = % ของความกว้างบัตร)
+// ตำแหน่งตราโฮโลแกรม 8 ดวง (x,y = % กลางดวง, size = % ของความกว้างบัตร, rot = องศาหมุน)
 const holoSeals = [
-  { x: 16, y: 20, size: 19 },
-  { x: 40, y: 14, size: 16 },
-  { x: 64, y: 21, size: 18 },
-  { x: 88, y: 27, size: 15 },
-  { x: 25, y: 55, size: 18 },
-  { x: 53, y: 50, size: 20 },
-  { x: 79, y: 58, size: 16 },
-  { x: 44, y: 83, size: 17 },
+  { x: 16, y: 20, size: 19, rot: 0 }, // ดวง 1
+  { x: 40, y: 14, size: 16, rot: 270 }, // ดวง 2
+  { x: 64, y: 21, size: 18, rot: 90 }, // ดวง 3
+  { x: 88, y: 27, size: 15, rot: 0 }, // ดวง 4
+  { x: 25, y: 55, size: 18, rot: 270 }, // ดวง 5
+  { x: 53, y: 50, size: 20, rot: 90 }, // ดวง 6
+  { x: 79, y: 58, size: 16, rot: 0 }, // ดวง 7
+  { x: 44, y: 83, size: 17, rot: 270 }, // ดวง 8
 ];
 
 const services = [
@@ -239,7 +239,12 @@ function App() {
                     <span
                       key={index}
                       className="holo-seal"
-                      style={{ left: `${seal.x}%`, top: `${seal.y}%`, width: `${seal.size}%` }}
+                      style={{
+                        left: `${seal.x}%`,
+                        top: `${seal.y}%`,
+                        width: `${seal.size}%`,
+                        "--seal-rot": `${seal.rot}deg`,
+                      }}
                     />
                   ))}
                 </span>
