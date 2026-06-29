@@ -82,8 +82,7 @@ function App() {
     let tiltY = 0; // (หน้า-หลัง)
     let smX = 0; // smooth tilt
     let smY = 0;
-    let phase = 0; // มุมแกว่งไล่สี (ไม่มีรอยต่อ)
-    let glare = 0; // แถบแสงวาบ
+    let sweep = 0; // เลื่อนลายโฮโลแกรมต่อเนื่อง
     let raf = 0;
 
     const onOrient = (event) => {
@@ -99,19 +98,13 @@ function App() {
     };
 
     const loop = () => {
-      phase += 0.011; // แกว่งไล่สีไปมาช้าๆ (ไม่มีรอยต่อ/เส้น)
+      sweep += 0.45; // ลายเลื่อนกวาดต่อเนื่อง (เส้นแสง+สีไหลผ่าน)
       smX += (tiltX - smX) * 0.07; // lerp ให้เนียน
       smY += (tiltY - smY) * 0.07;
-      // จำกัด 4-96% ไม่ให้ไล่สีเลื่อนหลุดขอบ (กันตราหายครึ่งซีก)
-      const x = clamp(50 + 34 * Math.sin(phase) + smX * 0.35, 4, 96);
-      const y = clamp(50 + 22 * Math.sin(phase * 0.66) + smY * 0.35, 6, 94);
+      const x = (((sweep + smX) % 62) + 62) % 62; // วน 0-62% ไร้รอยต่อ
+      const y = clamp(50 + smY * 0.4, 14, 86);
       root.style.setProperty("--holo-x", `${x}%`);
       root.style.setProperty("--holo-y", `${y}%`);
-      // แถบการมองเห็นกวาดผ่าน (ตราเด่นในแถบ จางนอกแถบ) เหมือน card8
-      const bx = clamp(50 + 46 * Math.sin(phase * 1.3 + 1) + smY * 0.3, 2, 98);
-      root.style.setProperty("--band-x", `${bx}%`);
-      glare += 0.26; // แสงนุ่มกวาดสวยๆ
-      root.style.setProperty("--sheen-x", `${glare % 260}%`);
       raf = window.requestAnimationFrame(loop);
     };
     loop();

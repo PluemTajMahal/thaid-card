@@ -705,60 +705,14 @@ a {
   pointer-events: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  -webkit-mask-image: url("/assets/seals-mask.png"),
-    linear-gradient(118deg, rgba(0, 0, 0, 0.5) 0%, #000 50%, rgba(0, 0, 0, 0.5) 100%);
-  -webkit-mask-size: 100% 100%, 260% 100%;
-  -webkit-mask-position: center, var(--band-x, 50%) 0;
-  -webkit-mask-repeat: no-repeat, no-repeat;
-  -webkit-mask-composite: source-in;
-  mask-image: url("/assets/seals-mask.png"),
-    linear-gradient(118deg, rgba(0, 0, 0, 0.5) 0%, #000 50%, rgba(0, 0, 0, 0.5) 100%);
-  mask-size: 100% 100%, 260% 100%;
-  mask-position: center, var(--band-x, 50%) 0;
-  mask-repeat: no-repeat, no-repeat;
-  mask-composite: intersect;
-  background-image: linear-gradient(
-    115deg,
-    #ff4d8f,
-    #ff9a3d,
-    #ffe24d,
-    #5bd97a,
-    #3db8d9,
-    #6a6cff,
-    #b85cf0,
-    #ff4d8f
-  );
-  background-size: 440% 440%;
-  background-repeat: no-repeat;
-  background-position: var(--holo-x, 50%) var(--holo-y, 50%);
-  filter: saturate(2.1) contrast(1.4) brightness(0.55);
-  opacity: 0.5;
-}
-
-/* แถบแสงกวาดผ่านตรา (จำกัดเฉพาะลายตราด้วย mask, ไม่ใช้ blend = ไม่เกิดตาราง) */
-.holo-layer::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   -webkit-mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
   mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
-  background: linear-gradient(
-    110deg,
-    transparent 18%,
-    rgba(255, 255, 255, 0.1) 36%,
-    rgba(255, 255, 255, 0.45) 46%,
-    rgba(255, 250, 255, 0.7) 50%,
-    rgba(255, 255, 255, 0.45) 54%,
-    rgba(255, 255, 255, 0.1) 64%,
-    transparent 82%
-  );
-  background-size: 260% 100%;
+  background-image: url("/assets/holo-pattern.png");
   background-repeat: repeat-x;
-  background-position: var(--sheen-x, 0%) 0;
-  opacity: 0.35;
+  background-size: 62% 120%;
+  background-position: var(--holo-x, 0%) var(--holo-y, 50%);
+  filter: saturate(1.55) contrast(1.22) brightness(0.95);
+  opacity: 0.5;
 }
 
 @keyframes holo-spin {
