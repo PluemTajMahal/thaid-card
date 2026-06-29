@@ -80,6 +80,7 @@ function App() {
     let tiltTarget = 0; // ออฟเซ็ตจากการเอียง
     let drift = 0; // สีไหลเองต่อเนื่อง
     let current = 0; // ค่าปัจจุบัน (lerp ให้เนียน)
+    let sheen = 0; // แถบแสงกวาด
     let raf = 0;
 
     const onOrient = (event) => {
@@ -99,9 +100,9 @@ function App() {
       const target = drift + tiltTarget;
       current += (target - current) * 0.06; // lerp ให้เปลี่ยนเนียน
       root.style.setProperty("--holo-hue", `${current}deg`);
-      // แสงวับนุ่มๆ คั่นระหว่างสี (ไหลไปพร้อมสี)
-      const bright = 1 + 0.28 * (0.5 + 0.5 * Math.sin(current * 0.05));
-      root.style.setProperty("--holo-bright", bright.toFixed(3));
+      // แถบแสงกวาดผ่านตราต่อเนื่อง
+      sheen += 0.45;
+      root.style.setProperty("--sheen-x", `${sheen % 140}%`);
       raf = window.requestAnimationFrame(loop);
     };
     loop();

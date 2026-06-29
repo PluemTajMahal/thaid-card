@@ -697,8 +697,30 @@ a {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   background: url("/assets/seals-color.png") center / 100% 100% no-repeat;
-  filter: saturate(1.85) contrast(1.1) brightness(var(--holo-bright, 1)) hue-rotate(var(--holo-hue, 0deg));
+  filter: saturate(1.85) contrast(1.1) hue-rotate(var(--holo-hue, 0deg));
   opacity: 0.45;
+}
+
+/* แถบแสงกวาดผ่านตรา (จำกัดเฉพาะลายตราด้วย mask, ไม่ใช้ blend = ไม่เกิดตาราง) */
+.holo-layer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
+  mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
+  background: linear-gradient(
+    108deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.85) 50%,
+    transparent 62%
+  );
+  background-size: 140% 100%;
+  background-repeat: repeat-x;
+  background-position: var(--sheen-x, 0%) 0;
+  opacity: 0.6;
 }
 
 @keyframes holo-spin {
