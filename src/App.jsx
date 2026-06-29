@@ -102,8 +102,8 @@ function App() {
       current += (target - current) * 0.06; // lerp ให้เปลี่ยนเนียน
       root.style.setProperty("--holo-hue", `${current}deg`);
       // แถบแสงกวาดผ่านตราต่อเนื่อง
-      sheen += 0.45;
-      root.style.setProperty("--sheen-x", `${sheen % 140}%`);
+      sheen += 0.5;
+      root.style.setProperty("--sheen-x", `${sheen % 170}%`);
       raf = window.requestAnimationFrame(loop);
     };
     loop();
