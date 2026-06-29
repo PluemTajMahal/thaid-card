@@ -737,16 +737,16 @@ a {
   mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
   background: linear-gradient(
     108deg,
-    transparent 22%,
-    rgba(255, 255, 255, 0.28) 40%,
-    rgba(255, 255, 255, 0.8) 50%,
-    rgba(255, 255, 255, 0.28) 60%,
-    transparent 78%
+    transparent 12%,
+    rgba(255, 255, 255, 0.12) 35%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0.12) 65%,
+    transparent 88%
   );
-  background-size: 190% 100%;
+  background-size: 230% 100%;
   background-repeat: repeat-x;
   background-position: var(--sheen-x, 0%) 0;
-  opacity: 0.4;
+  opacity: 0.3;
 }
 
 @keyframes holo-spin {

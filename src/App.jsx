@@ -104,8 +104,8 @@ function App() {
       smY += (tiltY - smY) * 0.07;
       root.style.setProperty("--holo-x", `${(sweep + smX) % 220}%`);
       root.style.setProperty("--holo-y", `${50 + smY}%`);
-      glare += 0.3; // แสงวาบกวาด
-      root.style.setProperty("--sheen-x", `${glare % 190}%`);
+      glare += 0.22; // แสงนุ่มกวาดช้าๆ
+      root.style.setProperty("--sheen-x", `${glare % 230}%`);
       raf = window.requestAnimationFrame(loop);
     };
     loop();
