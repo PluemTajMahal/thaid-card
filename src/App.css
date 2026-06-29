@@ -705,13 +705,9 @@ a {
   pointer-events: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  -webkit-mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
-  mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
-  background-image: url("/assets/holo-pattern.png");
-  background-repeat: repeat-x;
-  background-size: 62% 120%;
-  background-position: var(--holo-x, 0%) var(--holo-y, 50%);
-  filter: saturate(1.55) contrast(1.22) brightness(0.95);
+  background: url("/assets/seals-color.png") center / 100% 100% no-repeat;
+  filter: saturate(1.9) contrast(1.28) brightness(var(--holo-bright, 0.85))
+    hue-rotate(var(--holo-hue, 0deg));
   opacity: 0.5;
 }
 
