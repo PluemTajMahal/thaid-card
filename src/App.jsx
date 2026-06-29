@@ -99,6 +99,9 @@ function App() {
       const target = drift + tiltTarget;
       current += (target - current) * 0.06; // lerp ให้เปลี่ยนเนียน
       root.style.setProperty("--holo-hue", `${current}deg`);
+      // แสงวับนุ่มๆ คั่นระหว่างสี (ไหลไปพร้อมสี)
+      const bright = 1 + 0.28 * (0.5 + 0.5 * Math.sin(current * 0.05));
+      root.style.setProperty("--holo-bright", bright.toFixed(3));
       raf = window.requestAnimationFrame(loop);
     };
     loop();
