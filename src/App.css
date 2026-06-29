@@ -746,17 +746,19 @@ a {
   -webkit-mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
   mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
   background: linear-gradient(
-    108deg,
-    transparent 12%,
-    rgba(255, 255, 255, 0.12) 35%,
-    rgba(255, 255, 255, 0.45) 50%,
-    rgba(255, 255, 255, 0.12) 65%,
-    transparent 88%
+    110deg,
+    transparent 18%,
+    rgba(255, 255, 255, 0.1) 36%,
+    rgba(255, 255, 255, 0.45) 46%,
+    rgba(255, 250, 255, 0.7) 50%,
+    rgba(255, 255, 255, 0.45) 54%,
+    rgba(255, 255, 255, 0.1) 64%,
+    transparent 82%
   );
-  background-size: 230% 100%;
+  background-size: 260% 100%;
   background-repeat: repeat-x;
   background-position: var(--sheen-x, 0%) 0;
-  opacity: 0.12;
+  opacity: 0.35;
 }
 
 @keyframes holo-spin {
