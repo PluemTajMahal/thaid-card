@@ -107,6 +107,9 @@ function App() {
       const y = clamp(50 + 22 * Math.sin(phase * 0.66) + smY * 0.35, 6, 94);
       root.style.setProperty("--holo-x", `${x}%`);
       root.style.setProperty("--holo-y", `${y}%`);
+      // แถบการมองเห็นกวาดผ่าน (ตราเด่นในแถบ จางนอกแถบ) เหมือน card8
+      const bx = clamp(50 + 46 * Math.sin(phase * 1.3 + 1) + smY * 0.3, 2, 98);
+      root.style.setProperty("--band-x", `${bx}%`);
       glare += 0.22; // แสงนุ่มกวาดช้าๆ
       root.style.setProperty("--sheen-x", `${glare % 230}%`);
       raf = window.requestAnimationFrame(loop);

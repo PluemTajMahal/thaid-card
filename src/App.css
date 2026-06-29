@@ -705,8 +705,18 @@ a {
   pointer-events: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  -webkit-mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
-  mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
+  -webkit-mask-image: url("/assets/seals-mask.png"),
+    linear-gradient(118deg, rgba(0, 0, 0, 0.16) 14%, #000 40%, #000 60%, rgba(0, 0, 0, 0.16) 86%);
+  -webkit-mask-size: 100% 100%, 200% 100%;
+  -webkit-mask-position: center, var(--band-x, 50%) 0;
+  -webkit-mask-repeat: no-repeat, no-repeat;
+  -webkit-mask-composite: source-in;
+  mask-image: url("/assets/seals-mask.png"),
+    linear-gradient(118deg, rgba(0, 0, 0, 0.16) 14%, #000 40%, #000 60%, rgba(0, 0, 0, 0.16) 86%);
+  mask-size: 100% 100%, 200% 100%;
+  mask-position: center, var(--band-x, 50%) 0;
+  mask-repeat: no-repeat, no-repeat;
+  mask-composite: intersect;
   background-image: linear-gradient(
     115deg,
     #ff4d8f,
@@ -746,7 +756,7 @@ a {
   background-size: 230% 100%;
   background-repeat: repeat-x;
   background-position: var(--sheen-x, 0%) 0;
-  opacity: 0.3;
+  opacity: 0.2;
 }
 
 @keyframes holo-spin {
