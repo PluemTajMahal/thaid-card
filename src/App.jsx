@@ -102,8 +102,9 @@ function App() {
       phase += 0.011; // แกว่งไล่สีไปมาช้าๆ (ไม่มีรอยต่อ/เส้น)
       smX += (tiltX - smX) * 0.07; // lerp ให้เนียน
       smY += (tiltY - smY) * 0.07;
-      const x = 50 + 42 * Math.sin(phase) + smX * 0.4;
-      const y = 50 + 26 * Math.sin(phase * 0.66) + smY * 0.4;
+      // จำกัด 4-96% ไม่ให้ไล่สีเลื่อนหลุดขอบ (กันตราหายครึ่งซีก)
+      const x = clamp(50 + 34 * Math.sin(phase) + smX * 0.35, 4, 96);
+      const y = clamp(50 + 22 * Math.sin(phase * 0.66) + smY * 0.35, 6, 94);
       root.style.setProperty("--holo-x", `${x}%`);
       root.style.setProperty("--holo-y", `${y}%`);
       glare += 0.22; // แสงนุ่มกวาดช้าๆ

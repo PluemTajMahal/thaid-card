@@ -718,7 +718,7 @@ a {
     #b85cf0,
     #ff4d8f
   );
-  background-size: 360% 360%;
+  background-size: 440% 440%;
   background-repeat: no-repeat;
   background-position: var(--holo-x, 50%) var(--holo-y, 50%);
   filter: saturate(1.6) contrast(1.2) brightness(0.9);
