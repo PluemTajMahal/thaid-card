@@ -82,7 +82,7 @@ function App() {
     let tiltY = 0; // (หน้า-หลัง)
     let smX = 0; // smooth tilt
     let smY = 0;
-    let hue = 0; // สีหมุนพร้อมกันทุกตรา
+    let sweep = 0; // เลื่อนลายโฮโลแกรมต่อเนื่อง
     let raf = 0;
 
     const onOrient = (event) => {
@@ -98,14 +98,13 @@ function App() {
     };
 
     const loop = () => {
-      hue += 0.5; // สีไหลหมุนต่อเนื่อง (ทุกตราพร้อมกัน)
+      sweep += 0.38; // ลายเลื่อนกวาดต่อเนื่อง (เส้นแสง+สีไหลผ่านเนียนๆ)
       smX += (tiltX - smX) * 0.07; // lerp ให้เนียน
       smY += (tiltY - smY) * 0.07;
-      const h = hue + smX * 1.6 + smY * 0.9; // เอียงเร่ง/เลื่อนสี
-      root.style.setProperty("--holo-hue", `${h}deg`);
-      // แสงนุ่มพีคตอนเปลี่ยนสี (เนียน ไม่เป็นเส้นลากผ่าน)
-      const bright = 0.72 + 0.32 * (0.5 + 0.5 * Math.sin(h * (Math.PI / 55)));
-      root.style.setProperty("--holo-bright", bright.toFixed(3));
+      const x = (((sweep + smX) % 62) + 62) % 62; // วน 0-62% ไร้รอยต่อ
+      const y = clamp(50 + smY * 0.4, 14, 86);
+      root.style.setProperty("--holo-x", `${x}%`);
+      root.style.setProperty("--holo-y", `${y}%`);
       raf = window.requestAnimationFrame(loop);
     };
     loop();
