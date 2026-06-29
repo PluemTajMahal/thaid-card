@@ -698,7 +698,7 @@ a {
   -webkit-backface-visibility: hidden;
   background: url("/assets/seals-color.png") center / 100% 100% no-repeat;
   filter: saturate(1.9) contrast(1.2) brightness(0.92) hue-rotate(var(--holo-hue, 0deg));
-  opacity: 0.42;
+  opacity: 0.38;
 }
 
 /* แถบแสงกวาดผ่านตรา (จำกัดเฉพาะลายตราด้วย mask, ไม่ใช้ blend = ไม่เกิดตาราง) */
