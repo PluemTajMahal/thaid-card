@@ -258,8 +258,6 @@ function App() {
           )}
         </div>
 
-        <p className="card-dept">กรมการปกครอง</p>
-
         <div className="quick-actions" aria-label="Card actions">
           <button className="circle-action" type="button" aria-label="ข้อมูลบุคคล">
             <UserRound size={24} />

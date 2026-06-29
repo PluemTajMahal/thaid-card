@@ -58,18 +58,9 @@ a {
 }
 
 .hero {
-  height: calc(556px + env(safe-area-inset-top));
+  height: calc(515px + env(safe-area-inset-top));
   padding-top: calc(24px + env(safe-area-inset-top));
   background: var(--blue);
-}
-
-.card-dept {
-  margin: 12px 0 0;
-  text-align: center;
-  color: #fff;
-  font-size: 21px;
-  font-weight: 800;
-  letter-spacing: 1px;
 }
 
 .profile-row {
@@ -709,27 +700,26 @@ a {
 
 .holo-seal {
   position: absolute;
-  aspect-ratio: 1;
+  aspect-ratio: 927 / 1032;
   transform: translate(-50%, -50%);
   -webkit-mask: url("/assets/emblem-holo.png") center / contain no-repeat;
   mask: url("/assets/emblem-holo.png") center / contain no-repeat;
-  background-color: #6e2b33;
+  background-color: #837798;
   background-image: conic-gradient(
-    from var(--holo-angle, 0deg),
-    rgba(255, 45, 138, 0.85),
-    rgba(255, 138, 0, 0.85),
-    rgba(255, 230, 0, 0.85),
-    rgba(45, 255, 176, 0.85),
-    rgba(0, 179, 255, 0.85),
-    rgba(138, 92, 255, 0.85),
-    rgba(255, 45, 138, 0.85)
+    from 0deg,
+    rgba(205, 95, 150, 0.5),
+    rgba(220, 155, 85, 0.5),
+    rgba(210, 200, 100, 0.5),
+    rgba(100, 195, 165, 0.5),
+    rgba(95, 160, 205, 0.5),
+    rgba(150, 115, 200, 0.5),
+    rgba(205, 95, 150, 0.5)
   );
-  background-size: 230% 230%;
+  background-size: 200% 200%;
   background-position: var(--holo-x, 50%) var(--holo-y, 50%);
-  filter: saturate(1.7) hue-rotate(var(--holo-hue, 0deg));
+  filter: saturate(1.05) hue-rotate(var(--holo-hue, 0deg));
   mix-blend-mode: overlay;
-  opacity: 0.55;
-  animation: holo-spin 9s linear infinite;
+  opacity: 0.4;
 }
 
 @keyframes holo-spin {
