@@ -78,32 +78,34 @@ function App() {
     const root = document.documentElement;
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
-    let tiltTarget = 0; // ออฟเซ็ตจากการเอียง
-    let drift = 0; // สีไหลเองต่อเนื่อง
-    let current = 0; // ค่าปัจจุบัน (lerp ให้เนียน)
-    let sheen = 0; // แถบแสงกวาด
+    let tiltX = 0; // ออฟเซ็ตไล่สีจากการเอียง (ซ้าย-ขวา)
+    let tiltY = 0; // (หน้า-หลัง)
+    let smX = 0; // smooth tilt
+    let smY = 0;
+    let sweep = 0; // ไล่สีเลื่อนกวาดเองต่อเนื่อง
+    let glare = 0; // แถบแสงวาบ
     let raf = 0;
 
     const onOrient = (event) => {
       const gamma = clamp(event.gamma || 0, -45, 45);
       const beta = clamp((event.beta || 0) - 45, -45, 45);
-      tiltTarget = gamma * 2.2 + beta * 1.1;
+      tiltX = (gamma / 45) * 90;
+      tiltY = (beta / 45) * 45;
     };
 
     const onPointer = (event) => {
-      const x = event.clientX / window.innerWidth;
-      const y = event.clientY / window.innerHeight;
-      tiltTarget = (x - 0.5) * 150 + (y - 0.5) * 70;
+      tiltX = (event.clientX / window.innerWidth - 0.5) * 180;
+      tiltY = (event.clientY / window.innerHeight - 0.5) * 90;
     };
 
     const loop = () => {
-      drift += 0.42; // ไหลเองต่อเนื่อง (~25°/วินาที)
-      const target = drift + tiltTarget;
-      current += (target - current) * 0.06; // lerp ให้เปลี่ยนเนียน
-      root.style.setProperty("--holo-hue", `${current}deg`);
-      // แถบแสงกวาดผ่านตราต่อเนื่อง
-      sheen += 0.32;
-      root.style.setProperty("--sheen-x", `${sheen % 190}%`);
+      sweep += 0.4; // แถบสีเลื่อนกวาดต่อเนื่อง
+      smX += (tiltX - smX) * 0.07; // lerp ให้เนียน
+      smY += (tiltY - smY) * 0.07;
+      root.style.setProperty("--holo-x", `${(sweep + smX) % 220}%`);
+      root.style.setProperty("--holo-y", `${50 + smY}%`);
+      glare += 0.3; // แสงวาบกวาด
+      root.style.setProperty("--sheen-x", `${glare % 190}%`);
       raf = window.requestAnimationFrame(loop);
     };
     loop();
