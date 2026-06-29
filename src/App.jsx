@@ -71,28 +71,42 @@ function App() {
     return () => window.clearTimeout(timer);
   }, []);
 
-  // เอฟเฟกต์ตราโฮโลแกรม: ขยับ/เอียงเครื่องแล้วแสงรุ้งเลื่อน + เปลี่ยนสี
+  // เอฟเฟกต์ตราโฮโลแกรม: สีไหลเปลี่ยนต่อเนื่องเอง + เอียงเครื่องเร่ง/เลื่อนสี (เนียนด้วย lerp)
   useEffect(() => {
     if (!isUnlocked) return undefined;
     const root = document.documentElement;
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
+    let tiltTarget = 0; // ออฟเซ็ตจากการเอียง
+    let drift = 0; // สีไหลเองต่อเนื่อง
+    let current = 0; // ค่าปัจจุบัน (lerp ให้เนียน)
+    let raf = 0;
+
     const onOrient = (event) => {
-      const gamma = clamp(event.gamma || 0, -45, 45); // เอียงซ้าย-ขวา
-      const beta = clamp((event.beta || 0) - 45, -45, 45); // เอียงหน้า-หลัง
-      // ขยับทุกทิศ → สีเปลี่ยนต่อเนื่อง
-      root.style.setProperty("--holo-hue", `${gamma * 2.4 + beta * 1.2}deg`);
+      const gamma = clamp(event.gamma || 0, -45, 45);
+      const beta = clamp((event.beta || 0) - 45, -45, 45);
+      tiltTarget = gamma * 2.2 + beta * 1.1;
     };
 
     const onPointer = (event) => {
       const x = event.clientX / window.innerWidth;
       const y = event.clientY / window.innerHeight;
-      root.style.setProperty("--holo-hue", `${(x - 0.5) * 160 + (y - 0.5) * 80}deg`);
+      tiltTarget = (x - 0.5) * 150 + (y - 0.5) * 70;
     };
+
+    const loop = () => {
+      drift += 0.22; // ไหลเองช้าๆ (~13°/วินาที)
+      const target = drift + tiltTarget;
+      current += (target - current) * 0.06; // lerp ให้เปลี่ยนเนียน
+      root.style.setProperty("--holo-hue", `${current}deg`);
+      raf = window.requestAnimationFrame(loop);
+    };
+    loop();
 
     window.addEventListener("deviceorientation", onOrient);
     window.addEventListener("pointermove", onPointer);
     return () => {
+      window.cancelAnimationFrame(raf);
       window.removeEventListener("deviceorientation", onOrient);
       window.removeEventListener("pointermove", onPointer);
     };
