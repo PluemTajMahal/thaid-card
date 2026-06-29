@@ -701,25 +701,25 @@ a {
 .holo-seal {
   position: absolute;
   aspect-ratio: 927 / 1032;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) rotate(var(--seal-rot, 90deg));
   -webkit-mask: url("/assets/emblem-holo.png") center / contain no-repeat;
   mask: url("/assets/emblem-holo.png") center / contain no-repeat;
-  background-color: #837798;
+  background-color: #7a6e93;
   background-image: conic-gradient(
     from 0deg,
-    rgba(205, 95, 150, 0.5),
-    rgba(220, 155, 85, 0.5),
-    rgba(210, 200, 100, 0.5),
-    rgba(100, 195, 165, 0.5),
-    rgba(95, 160, 205, 0.5),
-    rgba(150, 115, 200, 0.5),
-    rgba(205, 95, 150, 0.5)
+    rgba(230, 80, 150, 0.72),
+    rgba(240, 160, 70, 0.72),
+    rgba(232, 215, 90, 0.72),
+    rgba(90, 210, 170, 0.72),
+    rgba(80, 165, 225, 0.72),
+    rgba(160, 110, 220, 0.72),
+    rgba(230, 80, 150, 0.72)
   );
-  background-size: 200% 200%;
+  background-size: 210% 210%;
   background-position: var(--holo-x, 50%) var(--holo-y, 50%);
-  filter: saturate(1.05) hue-rotate(var(--holo-hue, 0deg));
+  filter: saturate(1.35) hue-rotate(var(--holo-hue, 0deg));
   mix-blend-mode: overlay;
-  opacity: 0.4;
+  opacity: 0.55;
 }
 
 @keyframes holo-spin {
