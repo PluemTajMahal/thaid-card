@@ -98,11 +98,11 @@ function App() {
     };
 
     const loop = () => {
-      sweep += 0.38; // ลายเลื่อนกวาดต่อเนื่อง (เส้นแสง+สีไหลผ่านเนียนๆ)
+      sweep += 0.8; // ลายเลื่อนกวาด (เส้นแสงทีละเส้น + สีไหลผ่าน)
       smX += (tiltX - smX) * 0.07; // lerp ให้เนียน
       smY += (tiltY - smY) * 0.07;
-      const x = (((sweep + smX) % 62) + 62) % 62; // วน 0-62% ไร้รอยต่อ
-      const y = clamp(50 + smY * 0.4, 14, 86);
+      const x = (((sweep + smX) % 540) + 540) % 540; // วนไร้รอยต่อ
+      const y = clamp(50 + smY * 0.4, 12, 88);
       root.style.setProperty("--holo-x", `${x}%`);
       root.style.setProperty("--holo-y", `${y}%`);
       raf = window.requestAnimationFrame(loop);
