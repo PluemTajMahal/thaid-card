@@ -71,6 +71,36 @@ function App() {
     return () => window.clearTimeout(timer);
   }, []);
 
+  // เอฟเฟกต์ตราโฮโลแกรม: ขยับ/เอียงเครื่องแล้วแสงรุ้งเลื่อน + เปลี่ยนสี
+  useEffect(() => {
+    if (!isUnlocked) return undefined;
+    const root = document.documentElement;
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+    const onOrient = (event) => {
+      const gamma = clamp(event.gamma || 0, -45, 45); // เอียงซ้าย-ขวา
+      const beta = clamp((event.beta || 0) - 45, -45, 45); // เอียงหน้า-หลัง
+      root.style.setProperty("--holo-x", `${50 + (gamma / 45) * 60}%`);
+      root.style.setProperty("--holo-y", `${50 + (beta / 45) * 60}%`);
+      root.style.setProperty("--holo-hue", `${gamma * 4}deg`);
+    };
+
+    const onPointer = (event) => {
+      const x = event.clientX / window.innerWidth;
+      const y = event.clientY / window.innerHeight;
+      root.style.setProperty("--holo-x", `${x * 100}%`);
+      root.style.setProperty("--holo-y", `${y * 100}%`);
+      root.style.setProperty("--holo-hue", `${(x - 0.5) * 200}deg`);
+    };
+
+    window.addEventListener("deviceorientation", onOrient);
+    window.addEventListener("pointermove", onPointer);
+    return () => {
+      window.removeEventListener("deviceorientation", onOrient);
+      window.removeEventListener("pointermove", onPointer);
+    };
+  }, [isUnlocked]);
+
   useEffect(() => {
     const phone = document.querySelector(".phone");
     if (!phone) return undefined;
@@ -121,11 +151,20 @@ function App() {
     setPin("");
   };
 
+  const enableMotion = () => {
+    const D = window.DeviceOrientationEvent;
+    if (D && typeof D.requestPermission === "function") {
+      // iOS 13+ ต้องขอสิทธิ์จากการแตะของผู้ใช้
+      D.requestPermission().catch(() => {});
+    }
+  };
+
   const pressDigit = (digit) => {
     setPin((current) => {
       if (current.length >= PIN_LENGTH) return current;
       const next = current + digit;
       if (next.length === PIN_LENGTH) {
+        enableMotion();
         // mock: ใส่ครบ 6 หลักก็ปลดล็อก
         window.setTimeout(() => {
           setIsUnlocked(true);
@@ -182,6 +221,7 @@ function App() {
           >
             <span className="card-inner">
               <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
+              {isUnlocked && <span className="holo-emblem" aria-hidden="true" />}
               <img className="card-face card-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชน" />
             </span>
           </button>

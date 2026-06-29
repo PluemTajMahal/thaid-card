@@ -683,6 +683,49 @@ a {
   text-shadow: 0 1px 6px rgba(255, 255, 255, 0.6);
 }
 
+/* ===== ตราโฮโลแกรม (Holographic emblem) ===== */
+@property --holo-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.holo-emblem {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 58%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-mask: url("/assets/emblem-holo.png") center / contain no-repeat;
+  mask: url("/assets/emblem-holo.png") center / contain no-repeat;
+  background: conic-gradient(
+    from var(--holo-angle, 0deg),
+    #ff2d8a,
+    #ff8a00,
+    #ffe600,
+    #2dffb0,
+    #00b3ff,
+    #8a5cff,
+    #ff2d8a
+  );
+  background-size: 230% 230%;
+  background-position: var(--holo-x, 50%) var(--holo-y, 50%);
+  filter: saturate(1.8) brightness(1.2) hue-rotate(var(--holo-hue, 0deg));
+  mix-blend-mode: screen;
+  opacity: 0.9;
+  animation: holo-spin 9s linear infinite;
+}
+
+@keyframes holo-spin {
+  to {
+    --holo-angle: 360deg;
+  }
+}
+
 /* ===== Splash screen ===== */
 .splash {
   position: fixed;
