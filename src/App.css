@@ -698,7 +698,7 @@ a {
   -webkit-backface-visibility: hidden;
   background: url("/assets/seals-color.png") center / 100% 100% no-repeat;
   filter: saturate(1.2) hue-rotate(var(--holo-hue, 0deg));
-  opacity: 0.68;
+  opacity: 0.5;
 }
 
 @keyframes holo-spin {
