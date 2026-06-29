@@ -696,30 +696,24 @@ a {
   pointer-events: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-}
-
-.holo-seal {
-  position: absolute;
-  aspect-ratio: 927 / 1032;
-  transform: translate(-50%, -50%) rotate(var(--seal-rot, 90deg));
-  -webkit-mask: url("/assets/emblem-holo.png") center / contain no-repeat;
-  mask: url("/assets/emblem-holo.png") center / contain no-repeat;
+  -webkit-mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
+  mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
   background-color: #7a6e93;
   background-image: conic-gradient(
     from 0deg,
-    rgba(230, 80, 150, 0.72),
-    rgba(240, 160, 70, 0.72),
-    rgba(232, 215, 90, 0.72),
-    rgba(90, 210, 170, 0.72),
-    rgba(80, 165, 225, 0.72),
-    rgba(160, 110, 220, 0.72),
-    rgba(230, 80, 150, 0.72)
+    rgba(230, 80, 150, 0.75),
+    rgba(240, 160, 70, 0.75),
+    rgba(232, 215, 90, 0.75),
+    rgba(90, 210, 170, 0.75),
+    rgba(80, 165, 225, 0.75),
+    rgba(160, 110, 220, 0.75),
+    rgba(230, 80, 150, 0.75)
   );
-  background-size: 210% 210%;
+  background-size: 45% 45%;
   background-position: var(--holo-x, 50%) var(--holo-y, 50%);
-  filter: saturate(1.35) hue-rotate(var(--holo-hue, 0deg));
+  filter: saturate(1.4) hue-rotate(var(--holo-hue, 0deg));
   mix-blend-mode: overlay;
-  opacity: 0.55;
+  opacity: 0.6;
 }
 
 @keyframes holo-spin {
