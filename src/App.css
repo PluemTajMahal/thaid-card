@@ -709,7 +709,7 @@ a {
   mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
   background-image: url("/assets/holo-pattern.png");
   background-repeat: repeat-x;
-  background-size: 540% 130%;
+  background-size: 280% 130%;
   background-position: var(--holo-x, 0%) var(--holo-y, 50%);
   filter: saturate(1.55) contrast(1.2) brightness(0.9);
   opacity: 0.5;

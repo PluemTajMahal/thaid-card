@@ -98,10 +98,11 @@ function App() {
     };
 
     const loop = () => {
-      sweep += 0.8; // ลายเลื่อนกวาด (เส้นแสงทีละเส้น + สีไหลผ่าน)
+      sweep += 0.42; // ลายเลื่อนกวาดช้าๆ (เส้นแสงทีละเส้น ไม่ถี่)
       smX += (tiltX - smX) * 0.07; // lerp ให้เนียน
       smY += (tiltY - smY) * 0.07;
-      const x = (((sweep + smX) % 540) + 540) % 540; // วนไร้รอยต่อ
+      // วนทุก 6 tile (280%×6) = ลงตัวพอดี ไร้รอยต่อ ไม่กระตุก
+      const x = (((sweep + smX) % 1680) + 1680) % 1680;
       const y = clamp(50 + smY * 0.4, 12, 88);
       root.style.setProperty("--holo-x", `${x}%`);
       root.style.setProperty("--holo-y", `${y}%`);
