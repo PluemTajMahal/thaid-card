@@ -80,17 +80,14 @@ function App() {
     const onOrient = (event) => {
       const gamma = clamp(event.gamma || 0, -45, 45); // เอียงซ้าย-ขวา
       const beta = clamp((event.beta || 0) - 45, -45, 45); // เอียงหน้า-หลัง
-      root.style.setProperty("--holo-x", `${50 + (gamma / 45) * 75}%`);
-      root.style.setProperty("--holo-y", `${50 + (beta / 45) * 75}%`);
-      root.style.setProperty("--holo-hue", `${gamma * 1.8}deg`);
+      // ขยับทุกทิศ → สีเปลี่ยนต่อเนื่อง
+      root.style.setProperty("--holo-hue", `${gamma * 2.4 + beta * 1.2}deg`);
     };
 
     const onPointer = (event) => {
       const x = event.clientX / window.innerWidth;
       const y = event.clientY / window.innerHeight;
-      root.style.setProperty("--holo-x", `${x * 100}%`);
-      root.style.setProperty("--holo-y", `${y * 100}%`);
-      root.style.setProperty("--holo-hue", `${(x - 0.5) * 110}deg`);
+      root.style.setProperty("--holo-hue", `${(x - 0.5) * 160 + (y - 0.5) * 80}deg`);
     };
 
     window.addEventListener("deviceorientation", onOrient);
@@ -355,6 +352,7 @@ function App() {
           >
             <span className="expanded-card-inner">
               <img className="expanded-face expanded-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชนขยาย" />
+              {isUnlocked && <span className="holo-layer" aria-hidden="true" />}
               <img className="expanded-face expanded-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชนขยาย" />
             </span>
           </button>
