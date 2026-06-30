@@ -112,20 +112,22 @@ function App() {
     const BASE_HUE = 337;
     const STEP = 52; // ระยะเปลี่ยนสีต่อรอบ (เนียนแต่เห็นสีใหม่ชัด)
     const hsl = (h) => `hsl(${BASE_HUE + h}, 57%, 44%)`;
-    // หัวเส้นเป็นสีอ่อนเรืองแสง (ไม่ใช่สีขาว) ตราจึงไม่หาย
-    const glow = (h, l) => `hsl(${BASE_HUE + h}, 62%, ${l}%)`;
+
+    // หัวเส้น = แสงอาทิตย์สะท้อนสีส้มอุ่น
+    const SUN_SOFT = "rgba(255, 188, 120, 0.45)";
+    const SUN_PEAK = "rgba(255, 224, 170, 0.95)";
 
     // สร้าง gradient: ด้านหลังเส้น = สีใหม่, เส้นแสงตรงกลาง, ด้านหน้าเส้น = สีเดิม
-    const buildGrad = (P, newC, oldC, gMid, gPeak, newOnLeft) => {
+    const buildGrad = (P, newC, oldC, newOnLeft) => {
       const a = newOnLeft ? newC : oldC; // สีฝั่งซ้าย (เริ่ม gradient)
       const b = newOnLeft ? oldC : newC; // สีฝั่งขวา (จบ gradient)
       return (
         `linear-gradient(100deg,` +
-        ` ${a} 0%, ${a} ${P - 14}%,` +
-        ` ${gMid} ${P - 7}%,` +
-        ` ${gPeak} ${P}%,` +
-        ` ${gMid} ${P + 7}%,` +
-        ` ${b} ${P + 14}%, ${b} 100%)`
+        ` ${a} 0%, ${a} ${P - 13}%,` +
+        ` ${SUN_SOFT} ${P - 6}%,` +
+        ` ${SUN_PEAK} ${P}%,` +
+        ` ${SUN_SOFT} ${P + 6}%,` +
+        ` ${b} ${P + 13}%, ${b} 100%)`
       );
     };
 
@@ -142,15 +144,11 @@ function App() {
       const tilt = smX * 1.5;
       const oldC = hsl(n * STEP + tilt);
       const newC = hsl((n + 1) * STEP + tilt);
-      // หัวเส้น = สีกึ่งกลางระหว่างเก่า/ใหม่ แต่อ่อนเรืองแสง
-      const midH = (n + 0.5) * STEP + tilt;
-      const gMid = glow(midH, 60);
-      const gPeak = glow(midH, 78);
 
       // dir 0: เส้นวิ่งซ้าย→ขวา, สีใหม่อยู่ฝั่งซ้าย (หลังเส้น)
-      root.style.setProperty("--grad-fwd", buildGrad(p * 100, newC, oldC, gMid, gPeak, true));
+      root.style.setProperty("--grad-fwd", buildGrad(p * 100, newC, oldC, true));
       // dir 1: เส้นวิ่งขวา→ซ้าย, สีใหม่อยู่ฝั่งขวา (หลังเส้น)
-      root.style.setProperty("--grad-rev", buildGrad((1 - p) * 100, newC, oldC, gMid, gPeak, false));
+      root.style.setProperty("--grad-rev", buildGrad((1 - p) * 100, newC, oldC, false));
 
       raf = window.requestAnimationFrame(loop);
     };
