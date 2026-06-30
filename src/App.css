@@ -721,7 +721,7 @@ a {
   background-position: var(--sheen-fwd, 0%) 0, var(--flow-fwd, 0%) 0;
   background-repeat: no-repeat, repeat-x;
   filter: saturate(3) contrast(1.7) brightness(0.32);
-  opacity: 0.62;
+  opacity: 0.32;
 }
 
 .snake-seal[data-dir="1"] {
