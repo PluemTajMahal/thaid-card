@@ -25,6 +25,9 @@ const cardImages = {
   back: "/assets/id-card-back.png",
 };
 
+// ตรา 8 ดวง เรียงตามลำดับงู (มาสก์รายดวง seal-0..7.png)
+const SNAKE_SEALS = [0, 1, 2, 3, 4, 5, 6, 7];
+
 const services = [
   { icon: IdCard, label: "ตรวจสอบ\nคำขอ" },
   { icon: CheckSquare, label: "การรับรอง\nเอกสาร" },
@@ -82,7 +85,7 @@ function App() {
     let tiltY = 0; // (หน้า-หลัง)
     let smX = 0; // smooth tilt
     let smY = 0;
-    let sweep = 0; // เลื่อนลายโฮโลแกรมต่อเนื่อง
+    let t = 0; // เวลาเดินคลื่นสี
     let raf = 0;
 
     const onOrient = (event) => {
@@ -98,14 +101,20 @@ function App() {
     };
 
     const loop = () => {
-      sweep += 0.42; // ลายเลื่อนกวาดช้าๆ (เส้นแสงทีละเส้น ไม่ถี่)
-      smX += (tiltX - smX) * 0.07; // lerp ให้เนียน
+      t += 0.006; // ช้าๆ
+      smX += (tiltX - smX) * 0.07;
       smY += (tiltY - smY) * 0.07;
-      // วนทุก 6 tile (280%×6) = ลงตัวพอดี ไร้รอยต่อ ไม่กระตุก
-      const x = (((sweep + smX) % 1680) + 1680) % 1680;
-      const y = clamp(50 + smY * 0.4, 12, 88);
-      root.style.setProperty("--holo-x", `${x}%`);
-      root.style.setProperty("--holo-y", `${y}%`);
+      // คลื่นสี+แสง ไล่ทีละดวงตามลำดับงู (แต่ละดวง offset ตาม index)
+      const seals = document.querySelectorAll(".snake-seal");
+      seals.forEach((el) => {
+        const j = Number(el.dataset.i);
+        const p = t - j * 0.62 + smX * 0.012;
+        const hue = p * 64; // สีเลื่อนไล่ทีละดวง
+        const f = p - Math.floor(p);
+        const light = Math.exp(-(((f - 0.5) / 0.13) ** 2) / 2); // แสงวิ่งผ่านทีละดวง
+        el.style.setProperty("--h", `${hue}deg`);
+        el.style.setProperty("--b", (0.8 + 0.55 * light).toFixed(3));
+      });
       raf = window.requestAnimationFrame(loop);
     };
     loop();
@@ -251,7 +260,21 @@ function App() {
           >
             <span className="card-inner">
               <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
-              {isUnlocked && <span className="holo-layer" aria-hidden="true" />}
+              {isUnlocked && (
+                <span className="holo-wrap" aria-hidden="true">
+                  {SNAKE_SEALS.map((j) => (
+                    <span
+                      key={j}
+                      className="snake-seal"
+                      data-i={j}
+                      style={{
+                        WebkitMaskImage: `url(/assets/seal-${j}.png)`,
+                        maskImage: `url(/assets/seal-${j}.png)`,
+                      }}
+                    />
+                  ))}
+                </span>
+              )}
               <img className="card-face card-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชน" />
             </span>
           </button>
@@ -385,7 +408,21 @@ function App() {
           >
             <span className="expanded-card-inner">
               <img className="expanded-face expanded-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชนขยาย" />
-              {isUnlocked && <span className="holo-layer" aria-hidden="true" />}
+              {isUnlocked && (
+                <span className="holo-wrap" aria-hidden="true">
+                  {SNAKE_SEALS.map((j) => (
+                    <span
+                      key={j}
+                      className="snake-seal"
+                      data-i={j}
+                      style={{
+                        WebkitMaskImage: `url(/assets/seal-${j}.png)`,
+                        maskImage: `url(/assets/seal-${j}.png)`,
+                      }}
+                    />
+                  ))}
+                </span>
+              )}
               <img className="expanded-face expanded-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชนขยาย" />
             </span>
           </button>

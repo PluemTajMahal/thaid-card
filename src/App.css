@@ -699,19 +699,27 @@ a {
   initial-value: 0deg;
 }
 
-.holo-layer {
+.holo-wrap {
   position: absolute;
   inset: 0;
   pointer-events: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  -webkit-mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
-  mask: url("/assets/seals-mask.png") center / 100% 100% no-repeat;
-  background-image: url("/assets/holo-pattern.png");
-  background-repeat: repeat-x;
-  background-size: 280% 130%;
-  background-position: var(--holo-x, 0%) var(--holo-y, 50%);
-  filter: saturate(1.55) contrast(1.2) brightness(0.9);
+}
+
+.snake-seal {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  background: #b03064;
+  filter: saturate(1.7) contrast(1.25) brightness(var(--b, 0.82))
+    hue-rotate(var(--h, 0deg));
   opacity: 0.5;
 }
 
