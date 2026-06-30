@@ -108,17 +108,44 @@ function App() {
       tiltY = (event.clientY / window.innerHeight - 0.5) * 90;
     };
 
+    // สีฐาน #b03064 ≈ hsl(337, 57%, 44%) — ก้าวสีทีละ STEP องศาต่อ 1 รอบเส้นแสง
+    const BASE_HUE = 337;
+    const STEP = 52; // ระยะเปลี่ยนสีต่อรอบ (เนียนแต่เห็นสีใหม่ชัด)
+    const hsl = (h) => `hsl(${BASE_HUE + h}, 57%, 44%)`;
+
+    // สร้าง gradient: ด้านหลังเส้น = สีใหม่, เส้นแสงตรงกลาง, ด้านหน้าเส้น = สีเดิม
+    const buildGrad = (P, newC, oldC, newOnLeft) => {
+      const a = newOnLeft ? newC : oldC; // สีฝั่งซ้าย (เริ่ม gradient)
+      const b = newOnLeft ? oldC : newC; // สีฝั่งขวา (จบ gradient)
+      return (
+        `linear-gradient(100deg,` +
+        ` ${a} 0%, ${a} ${P - 13}%,` +
+        ` rgba(255,255,255,0.10) ${P - 6}%,` +
+        ` rgba(255,255,255,0.95) ${P}%,` +
+        ` rgba(255,255,255,0.10) ${P + 6}%,` +
+        ` ${b} ${P + 13}%, ${b} 100%)`
+      );
+    };
+
+    const PASS_MS = 4000; // เวลาเส้นแสงวิ่งผ่าน 1 ดวง (ช้าๆ)
     let prev = 0;
     const loop = (ts) => {
       const dt = Math.min(ts - prev, 50);
       prev = ts;
       smX += (tiltX - smX) * (1 - Math.pow(0.93, dt / 16.67));
-      const light = ts * 0.054;
-      // สีไหลเปลี่ยนต่อเนื่องเนียนๆ — เส้นแสงเป็นตัวคั่นสีเดิมกับสีใหม่
-      const hue = ts * 0.013 + smX * 1.5;
-      root.style.setProperty("--h", `${hue}deg`);
-      root.style.setProperty("--light-fwd", `${light}%`);
-      root.style.setProperty("--light-rev", `${-light}%`);
+
+      const progress = ts / PASS_MS;
+      const n = Math.floor(progress);
+      const p = progress - n; // 0..1 ตำแหน่งเส้นในรอบนี้
+      const tilt = smX * 1.5;
+      const oldC = hsl(n * STEP + tilt);
+      const newC = hsl((n + 1) * STEP + tilt);
+
+      // dir 0: เส้นวิ่งซ้าย→ขวา, สีใหม่อยู่ฝั่งซ้าย (หลังเส้น)
+      root.style.setProperty("--grad-fwd", buildGrad(p * 100, newC, oldC, true));
+      // dir 1: เส้นวิ่งขวา→ซ้าย, สีใหม่อยู่ฝั่งขวา (หลังเส้น)
+      root.style.setProperty("--grad-rev", buildGrad((1 - p) * 100, newC, oldC, false));
+
       raf = window.requestAnimationFrame(loop);
     };
     raf = window.requestAnimationFrame(loop);

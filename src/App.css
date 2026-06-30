@@ -716,24 +716,15 @@ a {
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
   mask-position: center;
-  background-color: #b03064;
-  background-image: linear-gradient(
-    100deg,
-    transparent 26%,
-    rgba(255, 255, 255, 0.2) 42%,
-    rgba(255, 255, 255, 0.85) 50%,
-    rgba(255, 255, 255, 0.2) 58%,
-    transparent 74%
-  );
-  background-size: 220% 100%;
-  background-repeat: repeat-x;
-  background-position: var(--light-fwd, 0%) 0;
-  filter: saturate(2.5) contrast(1.6) brightness(0.6) hue-rotate(var(--h, 0deg));
+  background-image: var(--grad-fwd, linear-gradient(100deg, #b03064, #b03064));
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  filter: saturate(2.5) contrast(1.6) brightness(0.6);
   opacity: 0.38;
 }
 
 .snake-seal[data-dir="1"] {
-  background-position: var(--light-rev, 0%) 0;
+  background-image: var(--grad-rev, linear-gradient(100deg, #b03064, #b03064));
 }
 
 @keyframes holo-spin {
