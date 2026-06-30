@@ -25,8 +25,17 @@ const cardImages = {
   back: "/assets/id-card-back.png",
 };
 
-// ตรา 8 ดวง เรียงตามลำดับงู (มาสก์รายดวง seal-0..7.png)
-const SNAKE_SEALS = [0, 1, 2, 3, 4, 5, 6, 7];
+// ตรา 8 ดวง: ตำแหน่งกล่อง (% ของบัตร) + ทิศเส้นแสง (dir 0=ซ้าย→ขวา, 1=ขวา→ซ้าย)
+const SNAKE_SEALS = [
+  { i: 0, x: 0.0, y: 11.28, w: 5.53, h: 26.16, dir: 0 },
+  { i: 1, x: 15.57, y: 14.88, w: 20.02, h: 28.53, dir: 1 },
+  { i: 2, x: 39.45, y: 7.58, w: 17.88, h: 31.75, dir: 0 },
+  { i: 3, x: 72.61, y: 5.88, w: 19.85, h: 28.53, dir: 1 },
+  { i: 4, x: 57.75, y: 33.74, w: 19.9, h: 28.53, dir: 0 },
+  { i: 5, x: 35.65, y: 57.16, w: 19.9, h: 28.44, dir: 1 },
+  { i: 6, x: 58.53, y: 83.13, w: 17.11, h: 16.87, dir: 0 },
+  { i: 7, x: 9.15, y: 68.34, w: 17.88, h: 31.66, dir: 1 },
+];
 
 const services = [
   { icon: IdCard, label: "ตรวจสอบ\nคำขอ" },
@@ -101,19 +110,17 @@ function App() {
     };
 
     const loop = () => {
-      t += 0.006; // ช้าๆ
+      t += 1;
       smX += (tiltX - smX) * 0.07;
       smY += (tiltY - smY) * 0.07;
-      // คลื่นสี+แสง ไล่ทีละดวงตามลำดับงู (แต่ละดวง offset ตาม index)
+      const light = (t * 0.9) % 220; // เส้นแสงวิ่ง (ช้า)
+      const hue = t * 0.22 + smX * 1.5; // สีเปลี่ยนพร้อมกันทุกดวง
       const seals = document.querySelectorAll(".snake-seal");
       seals.forEach((el) => {
-        const j = Number(el.dataset.i);
-        const p = t - j * 0.62 + smX * 0.012;
-        const hue = p * 64; // สีเลื่อนไล่ทีละดวง
-        const f = p - Math.floor(p);
-        const light = Math.exp(-(((f - 0.5) / 0.13) ** 2) / 2); // แสงวิ่งผ่านทีละดวง
+        const dir = Number(el.dataset.dir);
+        const lp = dir === 0 ? light : 220 - light; // สลับทิศแต่ละดวง
         el.style.setProperty("--h", `${hue}deg`);
-        el.style.setProperty("--b", (0.8 + 0.55 * light).toFixed(3));
+        el.style.setProperty("--light", `${lp}%`);
       });
       raf = window.requestAnimationFrame(loop);
     };
@@ -262,14 +269,18 @@ function App() {
               <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  {SNAKE_SEALS.map((j) => (
+                  {SNAKE_SEALS.map((s) => (
                     <span
-                      key={j}
+                      key={s.i}
                       className="snake-seal"
-                      data-i={j}
+                      data-dir={s.dir}
                       style={{
-                        WebkitMaskImage: `url(/assets/seal-${j}.png)`,
-                        maskImage: `url(/assets/seal-${j}.png)`,
+                        left: `${s.x}%`,
+                        top: `${s.y}%`,
+                        width: `${s.w}%`,
+                        height: `${s.h}%`,
+                        WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
+                        maskImage: `url(/assets/seal-${s.i}.png)`,
                       }}
                     />
                   ))}
@@ -410,14 +421,18 @@ function App() {
               <img className="expanded-face expanded-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชนขยาย" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  {SNAKE_SEALS.map((j) => (
+                  {SNAKE_SEALS.map((s) => (
                     <span
-                      key={j}
+                      key={s.i}
                       className="snake-seal"
-                      data-i={j}
+                      data-dir={s.dir}
                       style={{
-                        WebkitMaskImage: `url(/assets/seal-${j}.png)`,
-                        maskImage: `url(/assets/seal-${j}.png)`,
+                        left: `${s.x}%`,
+                        top: `${s.y}%`,
+                        width: `${s.w}%`,
+                        height: `${s.h}%`,
+                        WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
+                        maskImage: `url(/assets/seal-${s.i}.png)`,
                       }}
                     />
                   ))}

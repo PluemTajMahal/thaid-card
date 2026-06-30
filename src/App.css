@@ -709,7 +709,6 @@ a {
 
 .snake-seal {
   position: absolute;
-  inset: 0;
   pointer-events: none;
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
@@ -717,9 +716,19 @@ a {
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
   mask-position: center;
-  background: #b03064;
-  filter: saturate(1.7) contrast(1.25) brightness(var(--b, 0.82))
-    hue-rotate(var(--h, 0deg));
+  background-color: #b03064;
+  background-image: linear-gradient(
+    100deg,
+    transparent 26%,
+    rgba(255, 255, 255, 0.2) 42%,
+    rgba(255, 255, 255, 0.85) 50%,
+    rgba(255, 255, 255, 0.2) 58%,
+    transparent 74%
+  );
+  background-size: 220% 100%;
+  background-repeat: repeat-x;
+  background-position: var(--light, 0%) 0;
+  filter: saturate(1.7) contrast(1.22) brightness(0.92) hue-rotate(var(--h, 0deg));
   opacity: 0.5;
 }
 
