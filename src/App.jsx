@@ -129,12 +129,12 @@ function App() {
       prev = ts;
       smX += (tiltX - smX) * (1 - Math.pow(0.93, dt / 16.67));
 
-      const flow = ts * 0.018 + smX * 1.5; // rainbow ไหลช้าๆ + เร่งด้วยการเอียง
-      const sheenPos = ts * 0.05; // เส้นแสงวิ่งเร็วกว่า
+      const flow = ts * 0.018 + smX * 2; // rainbow ไหลช้าๆ + เลื่อนเมื่อเอียง
+      const sheenPos = ts * 0.05 + smX * 3; // เส้นแสงวิ่ง + ขยับตามการเอียงชัดเจน
       root.style.setProperty("--flow-fwd", `${flow}%`);
       root.style.setProperty("--flow-rev", `${-flow}%`);
-      root.style.setProperty("--sheen-fwd", `${sheenPos % 200}%`);
-      root.style.setProperty("--sheen-rev", `${200 - (sheenPos % 200)}%`);
+      root.style.setProperty("--sheen-fwd", `${sheenPos}%`);
+      root.style.setProperty("--sheen-rev", `${-sheenPos}%`);
 
       raf = window.requestAnimationFrame(loop);
     };

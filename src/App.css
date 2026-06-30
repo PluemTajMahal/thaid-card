@@ -719,7 +719,7 @@ a {
   background-image: var(--sheen), var(--rainbow, linear-gradient(100deg, #b03064, #b03064));
   background-size: 220% 100%, 200% 100%;
   background-position: var(--sheen-fwd, 0%) 0, var(--flow-fwd, 0%) 0;
-  background-repeat: no-repeat, repeat-x;
+  background-repeat: repeat-x, repeat-x;
   filter: saturate(2.5) contrast(1.5);
   opacity: 0.32;
 }
