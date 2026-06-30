@@ -109,12 +109,20 @@ function App() {
     };
 
     let prev = 0;
+    let hueBase = 0;
+    let prevCycle = -1;
     const loop = (ts) => {
-      const dt = Math.min(ts - prev, 50); // cap at 50ms to avoid jump after tab-switch
+      const dt = Math.min(ts - prev, 50);
       prev = ts;
       smX += (tiltX - smX) * (1 - Math.pow(0.93, dt / 16.67));
-      const light = ts * 0.054; // no modulo — CSS repeat-x wraps seamlessly
-      const hue = ts * 0.013 + smX * 1.5;
+      const light = ts * 0.054;
+      // เปลี่ยนสีทุกครั้งที่เส้นแสงวิ่งครบรอบ (เส้นพาสีใหม่มา)
+      const cycle = Math.floor(light / 220);
+      if (cycle !== prevCycle) {
+        prevCycle = cycle;
+        hueBase = cycle * 137; // golden-angle step → สีหลากหลายไม่ซ้ำ
+      }
+      const hue = hueBase + smX * 1.5;
       root.style.setProperty("--h", `${hue}deg`);
       root.style.setProperty("--light-fwd", `${light}%`);
       root.style.setProperty("--light-rev", `${-light}%`);
