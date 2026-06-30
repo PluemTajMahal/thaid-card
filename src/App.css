@@ -729,7 +729,7 @@ a {
   background-repeat: repeat-x;
   background-position: var(--light, 0%) 0;
   filter: saturate(2.0) contrast(1.4) brightness(0.78) hue-rotate(var(--h, 0deg));
-  opacity: 0.72;
+  opacity: 0.38;
 }
 
 @keyframes holo-spin {
