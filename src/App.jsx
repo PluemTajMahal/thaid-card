@@ -90,11 +90,10 @@ function App() {
     const root = document.documentElement;
     const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
-    let tiltX = 0; // ออฟเซ็ตไล่สีจากการเอียง (ซ้าย-ขวา)
-    let tiltY = 0; // (หน้า-หลัง)
-    let smX = 0; // smooth tilt
+    let tiltX = 0;
+    let tiltY = 0;
+    let smX = 0;
     let smY = 0;
-    let t = 0; // เวลาเดินคลื่นสี
     let raf = 0;
 
     const onOrient = (event) => {
@@ -109,22 +108,24 @@ function App() {
       tiltY = (event.clientY / window.innerHeight - 0.5) * 90;
     };
 
-    const loop = () => {
-      t += 1;
+    // cache once — seals are in DOM when isUnlocked effect fires
+    const sealEls = Array.from(document.querySelectorAll(".snake-seal"));
+
+    const loop = (ts) => {
       smX += (tiltX - smX) * 0.07;
       smY += (tiltY - smY) * 0.07;
-      const light = (t * 0.9) % 220; // เส้นแสงวิ่ง (ช้า)
-      const hue = t * 0.22 + smX * 1.5; // สีเปลี่ยนพร้อมกันทุกดวง
-      const seals = document.querySelectorAll(".snake-seal");
-      seals.forEach((el) => {
+      // time-based so frame drops don't cause stutter
+      const light = (ts * 0.054) % 220;
+      const hue = ts * 0.013 + smX * 1.5;
+      sealEls.forEach((el) => {
         const dir = Number(el.dataset.dir);
-        const lp = dir === 0 ? light : 220 - light; // สลับทิศแต่ละดวง
+        const lp = dir === 0 ? light : 220 - light;
         el.style.setProperty("--h", `${hue}deg`);
         el.style.setProperty("--light", `${lp}%`);
       });
       raf = window.requestAnimationFrame(loop);
     };
-    loop();
+    raf = window.requestAnimationFrame(loop);
 
     window.addEventListener("deviceorientation", onOrient);
     window.addEventListener("pointermove", onPointer);
