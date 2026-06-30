@@ -728,8 +728,8 @@ a {
   background-size: 220% 100%;
   background-repeat: repeat-x;
   background-position: var(--light-fwd, 0%) 0;
-  filter: saturate(2.0) contrast(1.4) brightness(0.78) hue-rotate(var(--h, 0deg));
-  opacity: 0.38;
+  filter: saturate(2.5) contrast(1.6) brightness(0.6) hue-rotate(var(--h, 0deg));
+  opacity: 0.72;
 }
 
 .snake-seal[data-dir="1"] {

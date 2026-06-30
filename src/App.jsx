@@ -113,12 +113,11 @@ function App() {
       const dt = Math.min(ts - prev, 50); // cap at 50ms to avoid jump after tab-switch
       prev = ts;
       smX += (tiltX - smX) * (1 - Math.pow(0.93, dt / 16.67));
-      const light = (ts * 0.054) % 220;
+      const light = ts * 0.054; // no modulo — CSS repeat-x wraps seamlessly
       const hue = ts * 0.013 + smX * 1.5;
-      // set on root — all .snake-seal elements (card + expanded) inherit via CSS cascade
       root.style.setProperty("--h", `${hue}deg`);
       root.style.setProperty("--light-fwd", `${light}%`);
-      root.style.setProperty("--light-rev", `${220 - light}%`);
+      root.style.setProperty("--light-rev", `${-light}%`);
       raf = window.requestAnimationFrame(loop);
     };
     raf = window.requestAnimationFrame(loop);
