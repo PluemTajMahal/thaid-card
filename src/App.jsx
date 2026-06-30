@@ -108,21 +108,17 @@ function App() {
       tiltY = (event.clientY / window.innerHeight - 0.5) * 90;
     };
 
-    // cache once — seals are in DOM when isUnlocked effect fires
-    const sealEls = Array.from(document.querySelectorAll(".snake-seal"));
-
+    let prev = 0;
     const loop = (ts) => {
-      smX += (tiltX - smX) * 0.07;
-      smY += (tiltY - smY) * 0.07;
-      // time-based so frame drops don't cause stutter
+      const dt = Math.min(ts - prev, 50); // cap at 50ms to avoid jump after tab-switch
+      prev = ts;
+      smX += (tiltX - smX) * (1 - Math.pow(0.93, dt / 16.67));
       const light = (ts * 0.054) % 220;
       const hue = ts * 0.013 + smX * 1.5;
-      sealEls.forEach((el) => {
-        const dir = Number(el.dataset.dir);
-        const lp = dir === 0 ? light : 220 - light;
-        el.style.setProperty("--h", `${hue}deg`);
-        el.style.setProperty("--light", `${lp}%`);
-      });
+      // set on root — all .snake-seal elements (card + expanded) inherit via CSS cascade
+      root.style.setProperty("--h", `${hue}deg`);
+      root.style.setProperty("--light-fwd", `${light}%`);
+      root.style.setProperty("--light-rev", `${220 - light}%`);
       raf = window.requestAnimationFrame(loop);
     };
     raf = window.requestAnimationFrame(loop);
