@@ -111,15 +111,15 @@ function App() {
     // rainbow เต็มสเปกตรัมในตราดวงเดียว (วน 0→360 ต่อเนื่องไม่มีรอยต่อ)
     const stops = [];
     for (let i = 0; i <= 12; i++) {
-      stops.push(`hsl(${i * 30}, 80%, 55%) ${((i / 12) * 100).toFixed(1)}%`);
+      stops.push(`hsl(${i * 30}, 90%, 28%) ${((i / 12) * 100).toFixed(1)}%`);
     }
     const rainbow = `linear-gradient(100deg, ${stops.join(", ")})`;
     // เส้นแสงอาทิตย์สะท้อนสีส้มอุ่น (ชั้นบนสุด)
     const sheen =
-      "linear-gradient(100deg, transparent 38%," +
-      " rgba(255,170,70,0.55) 45%, rgba(255,150,40,0.9) 49%," +
-      " rgba(255,235,200,1) 50%, rgba(255,150,40,0.9) 51%," +
-      " rgba(255,170,70,0.55) 55%, transparent 62%)";
+      "linear-gradient(100deg, transparent 34%," +
+      " rgba(255,140,20,0.7) 42%, rgba(255,180,60,1) 47%," +
+      " rgba(255,255,220,1) 50%, rgba(255,180,60,1) 53%," +
+      " rgba(255,140,20,0.7) 58%, transparent 66%)";
     root.style.setProperty("--rainbow", rainbow);
     root.style.setProperty("--sheen", sheen);
 
