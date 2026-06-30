@@ -108,47 +108,32 @@ function App() {
       tiltY = (event.clientY / window.innerHeight - 0.5) * 90;
     };
 
-    // สีฐาน #b03064 ≈ hsl(337, 57%, 44%) — ก้าวสีทีละ STEP องศาต่อ 1 รอบเส้นแสง
-    const BASE_HUE = 337;
-    const STEP = 52; // ระยะเปลี่ยนสีต่อรอบ (เนียนแต่เห็นสีใหม่ชัด)
-    const hsl = (h) => `hsl(${BASE_HUE + h}, 57%, 44%)`;
+    // rainbow เต็มสเปกตรัมในตราดวงเดียว (วน 0→360 ต่อเนื่องไม่มีรอยต่อ)
+    const stops = [];
+    for (let i = 0; i <= 12; i++) {
+      stops.push(`hsl(${i * 30}, 80%, 55%) ${((i / 12) * 100).toFixed(1)}%`);
+    }
+    const rainbow = `linear-gradient(100deg, ${stops.join(", ")})`;
+    // เส้นแสงอาทิตย์สะท้อนสีส้มอุ่น (ชั้นบนสุด)
+    const sheen =
+      "linear-gradient(100deg, transparent 42%," +
+      " rgba(255,210,150,0.35) 48%, rgba(255,232,190,0.65) 50%," +
+      " rgba(255,210,150,0.35) 52%, transparent 58%)";
+    root.style.setProperty("--rainbow", rainbow);
+    root.style.setProperty("--sheen", sheen);
 
-    // หัวเส้น = แสงอาทิตย์สะท้อนสีส้มอุ่น
-    const SUN_SOFT = "rgba(255, 188, 120, 0.45)";
-    const SUN_PEAK = "rgba(255, 224, 170, 0.95)";
-
-    // สร้าง gradient: ด้านหลังเส้น = สีใหม่, เส้นแสงตรงกลาง, ด้านหน้าเส้น = สีเดิม
-    const buildGrad = (P, newC, oldC, newOnLeft) => {
-      const a = newOnLeft ? newC : oldC; // สีฝั่งซ้าย (เริ่ม gradient)
-      const b = newOnLeft ? oldC : newC; // สีฝั่งขวา (จบ gradient)
-      return (
-        `linear-gradient(100deg,` +
-        ` ${a} 0%, ${a} ${P - 13}%,` +
-        ` ${SUN_SOFT} ${P - 6}%,` +
-        ` ${SUN_PEAK} ${P}%,` +
-        ` ${SUN_SOFT} ${P + 6}%,` +
-        ` ${b} ${P + 13}%, ${b} 100%)`
-      );
-    };
-
-    const PASS_MS = 4000; // เวลาเส้นแสงวิ่งผ่าน 1 ดวง (ช้าๆ)
     let prev = 0;
     const loop = (ts) => {
       const dt = Math.min(ts - prev, 50);
       prev = ts;
       smX += (tiltX - smX) * (1 - Math.pow(0.93, dt / 16.67));
 
-      const progress = ts / PASS_MS;
-      const n = Math.floor(progress);
-      const p = progress - n; // 0..1 ตำแหน่งเส้นในรอบนี้
-      const tilt = smX * 1.5;
-      const oldC = hsl(n * STEP + tilt);
-      const newC = hsl((n + 1) * STEP + tilt);
-
-      // dir 0: เส้นวิ่งซ้าย→ขวา, สีใหม่อยู่ฝั่งซ้าย (หลังเส้น)
-      root.style.setProperty("--grad-fwd", buildGrad(p * 100, newC, oldC, true));
-      // dir 1: เส้นวิ่งขวา→ซ้าย, สีใหม่อยู่ฝั่งขวา (หลังเส้น)
-      root.style.setProperty("--grad-rev", buildGrad((1 - p) * 100, newC, oldC, false));
+      const flow = ts * 0.018 + smX * 1.5; // rainbow ไหลช้าๆ + เร่งด้วยการเอียง
+      const sheenPos = ts * 0.05; // เส้นแสงวิ่งเร็วกว่า
+      root.style.setProperty("--flow-fwd", `${flow}%`);
+      root.style.setProperty("--flow-rev", `${-flow}%`);
+      root.style.setProperty("--sheen-fwd", `${sheenPos % 200}%`);
+      root.style.setProperty("--sheen-rev", `${200 - (sheenPos % 200)}%`);
 
       raf = window.requestAnimationFrame(loop);
     };
