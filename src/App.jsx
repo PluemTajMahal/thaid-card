@@ -116,11 +116,12 @@ function App() {
     const rainbow = `linear-gradient(100deg, ${stops.join(", ")})`;
     // เส้นแสงอาทิตย์สะท้อนสีส้มอุ่น (ชั้นบนสุด)
     const sheen =
-      "linear-gradient(100deg, transparent 24%," +
-      " rgba(255,140,20,0.18) 36%, rgba(255,170,50,0.55) 44%," +
-      " rgba(255,200,100,0.88) 48%, rgba(255,255,220,1) 50%," +
-      " rgba(255,200,100,0.88) 52%, rgba(255,170,50,0.55) 56%," +
-      " rgba(255,140,20,0.18) 64%, transparent 76%)";
+      "linear-gradient(100deg," +
+      " transparent 0%, rgba(255,140,20,0.06) 10%," +
+      " rgba(255,160,40,0.22) 28%, rgba(255,200,100,0.88) 44%," +
+      " rgba(255,255,220,1) 50%," +
+      " rgba(255,200,100,0.88) 56%, rgba(255,160,40,0.22) 72%," +
+      " rgba(255,140,20,0.06) 90%, transparent 100%)";
     root.style.setProperty("--rainbow", rainbow);
     root.style.setProperty("--sheen", sheen);
 
