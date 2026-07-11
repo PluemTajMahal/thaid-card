@@ -118,10 +118,10 @@ function App() {
     const sheen =
       "linear-gradient(100deg," +
       " transparent 0%, rgba(255,140,20,0.06) 10%," +
-      " rgba(255,160,40,0.22) 28%, rgba(255,200,100,0.88) 44%," +
-      " rgba(255,255,220,1) 50%," +
-      " rgba(255,200,100,0.88) 56%, rgba(255,160,40,0.22) 72%," +
-      " rgba(255,140,20,0.06) 90%, transparent 100%)";
+      " rgba(255,160,40,0.10) 28%, rgba(255,200,100,0.45) 44%," +
+      " rgba(255,255,220,0.65) 50%," +
+      " rgba(255,200,100,0.45) 56%, rgba(255,160,40,0.10) 72%," +
+      " rgba(255,140,20,0.02) 90%, transparent 100%)";
     root.style.setProperty("--rainbow", rainbow);
     root.style.setProperty("--sheen", sheen);
 
