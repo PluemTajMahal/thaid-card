@@ -693,20 +693,31 @@ a {
 }
 
 /* ===== ตราโฮโลแกรม (Holographic emblem) ===== */
-@property --holo-angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
+
+/* Continuous hue-rotate cycling on top of the JS-driven conic rotation.
+   Each seal has a different animation-delay (set as inline style) so no two
+   seals share the same hue phase → organic, non-flat rainbow distribution. */
+@keyframes seal-hue {
+  from { filter: hue-rotate(0deg)   saturate(2.0); }
+  to   { filter: hue-rotate(360deg) saturate(2.0); }
 }
 
+/* mix-blend-mode on the CONTAINER (no mask here) keeps Safari 3D-card safe.
+   Putting blend-mode on the masked .snake-seal elements would trigger the
+   GPU checkerboard bug inside transform-style:preserve-3d on Safari. */
 .holo-wrap {
   position: absolute;
   inset: 0;
   pointer-events: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  mix-blend-mode: screen;
 }
 
+/* Prismatic conic rainbow inside each seal bbox, masked to the vector paths.
+   --holo-angle is set by the JS rAF loop (gives tilt interactivity).
+   --phase is set per-element via inline style (45° steps → 8 organic offsets).
+   dir=0 seals rotate forward; dir=1 seals rotate backward for variation. */
 .snake-seal {
   position: absolute;
   pointer-events: none;
@@ -716,22 +727,49 @@ a {
   mask-repeat: no-repeat;
   -webkit-mask-position: center;
   mask-position: center;
-  background-image: var(--sheen), var(--rainbow, linear-gradient(100deg, #b03064, #b03064));
-  background-size: 220% 100%, 200% 100%;
-  background-position: var(--sheen-fwd, 0%) 0, var(--flow-fwd, 0%) 0;
-  background-repeat: repeat-x, repeat-x;
-  filter: saturate(2.5) contrast(1.5);
-  opacity: 0.25;
+  background-image: conic-gradient(
+    from calc(var(--holo-angle, 0deg) + var(--phase, 0deg)) at 50% 50%,
+    rgba(255, 0, 128, 1)   0deg,
+    rgba(255, 80, 0, 1)   51deg,
+    rgba(255, 230, 0, 1) 102deg,
+    rgba(0, 220, 80, 1)  153deg,
+    rgba(0, 160, 255, 1) 204deg,
+    rgba(120, 0, 255, 1) 255deg,
+    rgba(255, 0, 200, 1) 306deg,
+    rgba(255, 0, 128, 1) 360deg
+  );
+  opacity: 0.28;
+  animation: seal-hue 7s linear infinite;
 }
 
 .snake-seal[data-dir="1"] {
-  background-position: var(--sheen-rev, 0%) 0, var(--flow-rev, 0%) 0;
+  background-image: conic-gradient(
+    from calc(var(--holo-angle-rev, 0deg) + var(--phase, 0deg)) at 50% 50%,
+    rgba(255, 0, 128, 1)   0deg,
+    rgba(255, 80, 0, 1)   51deg,
+    rgba(255, 230, 0, 1) 102deg,
+    rgba(0, 220, 80, 1)  153deg,
+    rgba(0, 160, 255, 1) 204deg,
+    rgba(120, 0, 255, 1) 255deg,
+    rgba(255, 0, 200, 1) 306deg,
+    rgba(255, 0, 128, 1) 360deg
+  );
 }
 
-@keyframes holo-spin {
-  to {
-    --holo-angle: 360deg;
-  }
+/* Diagonal specular glare line at 115°.
+   Stop positions (--s-a/b/c) are JS-driven from the rAF loop so the band
+   slides diagonally across the card and responds lightly to tilt.
+   Modulo-safe: band is invisible at both -15% and 120% → no stutter on wrap. */
+.holo-sweep {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    115deg,
+    transparent           var(--s-a, -25%),
+    rgba(255,255,255,0.62) var(--s-b, -15%),
+    transparent           var(--s-c, -5%)
+  );
 }
 
 /* ===== Splash screen ===== */

@@ -108,35 +108,22 @@ function App() {
       tiltY = (event.clientY / window.innerHeight - 0.5) * 90;
     };
 
-    // rainbow เต็มสเปกตรัมในตราดวงเดียว (วน 0→360 ต่อเนื่องไม่มีรอยต่อ)
-    const stops = [];
-    for (let i = 0; i <= 12; i++) {
-      stops.push(`hsl(${i * 30}, 100%, 8%) ${((i / 12) * 100).toFixed(1)}%`);
-    }
-    const rainbow = `linear-gradient(100deg, ${stops.join(", ")})`;
-    // เส้นแสงอาทิตย์สะท้อนสีส้มอุ่น (ชั้นบนสุด)
-    const sheen =
-      "linear-gradient(100deg," +
-      " transparent 0%, rgba(255,140,20,0.06) 10%," +
-      " rgba(255,160,40,0.10) 28%, rgba(255,200,100,0.45) 44%," +
-      " rgba(255,255,220,0.65) 50%," +
-      " rgba(255,200,100,0.45) 56%, rgba(255,160,40,0.10) 72%," +
-      " rgba(255,140,20,0.02) 90%, transparent 100%)";
-    root.style.setProperty("--rainbow", rainbow);
-    root.style.setProperty("--sheen", sheen);
-
     let prev = 0;
     const loop = (ts) => {
       const dt = Math.min(ts - prev, 50);
       prev = ts;
       smX += (tiltX - smX) * (1 - Math.pow(0.93, dt / 16.67));
 
-      const flow = ts * 0.018 + smX * 2; // rainbow ไหลช้าๆ + เลื่อนเมื่อเอียง
-      const sheenPos = ts * 0.05 + smX * 3; // เส้นแสงวิ่ง + ขยับตามการเอียงชัดเจน
-      root.style.setProperty("--flow-fwd", `${flow}%`);
-      root.style.setProperty("--flow-rev", `${-flow}%`);
-      root.style.setProperty("--sheen-fwd", `${sheenPos}%`);
-      root.style.setProperty("--sheen-rev", `${-sheenPos}%`);
+      // Conic rotation for all seals (JS-driven so tilt interactivity works)
+      const angle = ts * 0.055 + smX * 1.8;
+      root.style.setProperty("--holo-angle",     `${angle}deg`);
+      root.style.setProperty("--holo-angle-rev", `${-angle}deg`);
+
+      // Diagonal specular sweep at 115deg — range -15→120, invisible at both ends
+      const sweepMid = (ts * 0.016 + smX * 0.4) % 135 - 15;
+      root.style.setProperty("--s-a", `${sweepMid - 10}%`);
+      root.style.setProperty("--s-b", `${sweepMid}%`);
+      root.style.setProperty("--s-c", `${sweepMid + 10}%`);
 
       raf = window.requestAnimationFrame(loop);
     };
@@ -285,6 +272,7 @@ function App() {
               <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
+                  <span className="holo-sweep" />
                   {SNAKE_SEALS.map((s) => (
                     <span
                       key={s.i}
@@ -297,6 +285,8 @@ function App() {
                         height: `${s.h}%`,
                         WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
                         maskImage: `url(/assets/seal-${s.i}.png)`,
+                        "--phase": `${s.i * 45}deg`,
+                        animationDelay: `-${(s.i * 0.875).toFixed(2)}s`,
                       }}
                     />
                   ))}
@@ -437,6 +427,7 @@ function App() {
               <img className="expanded-face expanded-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชนขยาย" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
+                  <span className="holo-sweep" />
                   {SNAKE_SEALS.map((s) => (
                     <span
                       key={s.i}
@@ -449,6 +440,8 @@ function App() {
                         height: `${s.h}%`,
                         WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
                         maskImage: `url(/assets/seal-${s.i}.png)`,
+                        "--phase": `${s.i * 45}deg`,
+                        animationDelay: `-${(s.i * 0.875).toFixed(2)}s`,
                       }}
                     />
                   ))}
