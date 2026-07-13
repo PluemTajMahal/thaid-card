@@ -85,53 +85,6 @@ function App() {
   }, []);
 
   // เอฟเฟกต์ตราโฮโลแกรม: สีไหลเปลี่ยนต่อเนื่องเอง + เอียงเครื่องเร่ง/เลื่อนสี (เนียนด้วย lerp)
-  useEffect(() => {
-    if (!isUnlocked) return undefined;
-    const root = document.documentElement;
-    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-
-    let tiltX = 0;
-    let tiltY = 0;
-    let smX = 0;
-    let smY = 0;
-    let raf = 0;
-
-    const onOrient = (event) => {
-      const gamma = clamp(event.gamma || 0, -45, 45);
-      const beta = clamp((event.beta || 0) - 45, -45, 45);
-      tiltX = (gamma / 45) * 90;
-      tiltY = (beta / 45) * 45;
-    };
-
-    const onPointer = (event) => {
-      tiltX = (event.clientX / window.innerWidth - 0.5) * 180;
-      tiltY = (event.clientY / window.innerHeight - 0.5) * 90;
-    };
-
-    let prev = 0;
-    const loop = (ts) => {
-      const dt = Math.min(ts - prev, 50);
-      prev = ts;
-      smX += (tiltX - smX) * (1 - Math.pow(0.93, dt / 16.67));
-
-      // Magenta→White→Cyan wavefront sweeps at 115° from lower-left to upper-right.
-      // Range −60%→+60% of the 260%-wide pseudo-element over 5500 ms.
-      // Transparent gradient edges at 0% and 100% make the modulo reset invisible.
-      const waveT = ((ts % 5500) / 5500) * 120 - 60 + smX * 0.25;
-      root.style.setProperty("--wave-t", `${waveT.toFixed(2)}%`);
-
-      raf = window.requestAnimationFrame(loop);
-    };
-    raf = window.requestAnimationFrame(loop);
-
-    window.addEventListener("deviceorientation", onOrient);
-    window.addEventListener("pointermove", onPointer);
-    return () => {
-      window.cancelAnimationFrame(raf);
-      window.removeEventListener("deviceorientation", onOrient);
-      window.removeEventListener("pointermove", onPointer);
-    };
-  }, [isUnlocked]);
 
   useEffect(() => {
     const phone = document.querySelector(".phone");
@@ -195,20 +148,11 @@ function App() {
     setPin("");
   };
 
-  const enableMotion = () => {
-    const D = window.DeviceOrientationEvent;
-    if (D && typeof D.requestPermission === "function") {
-      // iOS 13+ ต้องขอสิทธิ์จากการแตะของผู้ใช้
-      D.requestPermission().catch(() => {});
-    }
-  };
-
   const pressDigit = (digit) => {
     setPin((current) => {
       if (current.length >= PIN_LENGTH) return current;
       const next = current + digit;
       if (next.length === PIN_LENGTH) {
-        enableMotion();
         // mock: ใส่ครบ 6 หลักก็ปลดล็อก
         window.setTimeout(() => {
           setIsUnlocked(true);
