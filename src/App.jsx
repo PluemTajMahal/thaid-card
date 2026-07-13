@@ -114,16 +114,11 @@ function App() {
       prev = ts;
       smX += (tiltX - smX) * (1 - Math.pow(0.93, dt / 16.67));
 
-      // Conic rotation for all seals (JS-driven so tilt interactivity works)
-      const angle = ts * 0.055 + smX * 1.8;
-      root.style.setProperty("--holo-angle",     `${angle}deg`);
-      root.style.setProperty("--holo-angle-rev", `${-angle}deg`);
-
-      // Diagonal specular sweep at 115deg — range -15→120, invisible at both ends
-      const sweepMid = (ts * 0.016 + smX * 0.4) % 135 - 15;
-      root.style.setProperty("--s-a", `${sweepMid - 10}%`);
-      root.style.setProperty("--s-b", `${sweepMid}%`);
-      root.style.setProperty("--s-c", `${sweepMid + 10}%`);
+      // Magenta→White→Cyan wavefront sweeps at 115° from lower-left to upper-right.
+      // Range −60%→+60% of the 260%-wide pseudo-element over 5500 ms.
+      // Transparent gradient edges at 0% and 100% make the modulo reset invisible.
+      const waveT = ((ts % 5500) / 5500) * 120 - 60 + smX * 0.25;
+      root.style.setProperty("--wave-t", `${waveT.toFixed(2)}%`);
 
       raf = window.requestAnimationFrame(loop);
     };
@@ -272,24 +267,8 @@ function App() {
               <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  <span className="holo-sweep" />
-                  {SNAKE_SEALS.map((s) => (
-                    <span
-                      key={s.i}
-                      className="snake-seal"
-                      data-dir={s.dir}
-                      style={{
-                        left: `${s.x}%`,
-                        top: `${s.y}%`,
-                        width: `${s.w}%`,
-                        height: `${s.h}%`,
-                        WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
-                        maskImage: `url(/assets/seal-${s.i}.png)`,
-                        "--phase": `${s.i * 45}deg`,
-                        animationDelay: `-${(s.i * 0.875).toFixed(2)}s`,
-                      }}
-                    />
-                  ))}
+                  <span className="holo-seals-ghost" />
+                  <span className="holo-wave" />
                 </span>
               )}
               <img className="card-face card-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชน" />
@@ -427,24 +406,8 @@ function App() {
               <img className="expanded-face expanded-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชนขยาย" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  <span className="holo-sweep" />
-                  {SNAKE_SEALS.map((s) => (
-                    <span
-                      key={s.i}
-                      className="snake-seal"
-                      data-dir={s.dir}
-                      style={{
-                        left: `${s.x}%`,
-                        top: `${s.y}%`,
-                        width: `${s.w}%`,
-                        height: `${s.h}%`,
-                        WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
-                        maskImage: `url(/assets/seal-${s.i}.png)`,
-                        "--phase": `${s.i * 45}deg`,
-                        animationDelay: `-${(s.i * 0.875).toFixed(2)}s`,
-                      }}
-                    />
-                  ))}
+                  <span className="holo-seals-ghost" />
+                  <span className="holo-wave" />
                 </span>
               )}
               <img className="expanded-face expanded-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชนขยาย" />
