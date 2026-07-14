@@ -85,6 +85,71 @@ function App() {
   }, []);
 
   // เอฟเฟกต์ตราโฮโลแกรม: สีไหลเปลี่ยนต่อเนื่องเอง + เอียงเครื่องเร่ง/เลื่อนสี (เนียนด้วย lerp)
+  useEffect(() => {
+    if (!isUnlocked) return undefined;
+    const root = document.documentElement;
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+    let tiltX = 0;
+    let tiltY = 0;
+    let smX = 0;
+    let smY = 0;
+    let raf = 0;
+
+    const onOrient = (event) => {
+      const gamma = clamp(event.gamma || 0, -45, 45);
+      const beta = clamp((event.beta || 0) - 45, -45, 45);
+      tiltX = (gamma / 45) * 90;
+      tiltY = (beta / 45) * 45;
+    };
+
+    const onPointer = (event) => {
+      tiltX = (event.clientX / window.innerWidth - 0.5) * 180;
+      tiltY = (event.clientY / window.innerHeight - 0.5) * 90;
+    };
+
+    // rainbow เต็มสเปกตรัมในตราดวงเดียว (วน 0→360 ต่อเนื่องไม่มีรอยต่อ)
+    const stops = [];
+    for (let i = 0; i <= 12; i++) {
+      stops.push(`hsl(${i * 30}, 100%, 8%) ${((i / 12) * 100).toFixed(1)}%`);
+    }
+    const rainbow = `linear-gradient(100deg, ${stops.join(", ")})`;
+    // เส้นแสงอาทิตย์สะท้อนสีส้มอุ่น (ชั้นบนสุด)
+    const sheen =
+      "linear-gradient(100deg," +
+      " transparent 0%, rgba(255,140,20,0.06) 10%," +
+      " rgba(255,160,40,0.10) 28%, rgba(255,200,100,0.45) 44%," +
+      " rgba(255,255,220,0.65) 50%," +
+      " rgba(255,200,100,0.45) 56%, rgba(255,160,40,0.10) 72%," +
+      " rgba(255,140,20,0.02) 90%, transparent 100%)";
+    root.style.setProperty("--rainbow", rainbow);
+    root.style.setProperty("--sheen", sheen);
+
+    let prev = 0;
+    const loop = (ts) => {
+      const dt = Math.min(ts - prev, 50);
+      prev = ts;
+      smX += (tiltX - smX) * (1 - Math.pow(0.93, dt / 16.67));
+
+      const flow = ts * 0.018 + smX * 2; // rainbow ไหลช้าๆ + เลื่อนเมื่อเอียง
+      const sheenPos = ts * 0.05 + smX * 3; // เส้นแสงวิ่ง + ขยับตามการเอียงชัดเจน
+      root.style.setProperty("--flow-fwd", `${flow}%`);
+      root.style.setProperty("--flow-rev", `${-flow}%`);
+      root.style.setProperty("--sheen-fwd", `${sheenPos}%`);
+      root.style.setProperty("--sheen-rev", `${-sheenPos}%`);
+
+      raf = window.requestAnimationFrame(loop);
+    };
+    raf = window.requestAnimationFrame(loop);
+
+    window.addEventListener("deviceorientation", onOrient);
+    window.addEventListener("pointermove", onPointer);
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.removeEventListener("deviceorientation", onOrient);
+      window.removeEventListener("pointermove", onPointer);
+    };
+  }, [isUnlocked]);
 
   useEffect(() => {
     const phone = document.querySelector(".phone");
@@ -148,11 +213,20 @@ function App() {
     setPin("");
   };
 
+  const enableMotion = () => {
+    const D = window.DeviceOrientationEvent;
+    if (D && typeof D.requestPermission === "function") {
+      // iOS 13+ ต้องขอสิทธิ์จากการแตะของผู้ใช้
+      D.requestPermission().catch(() => {});
+    }
+  };
+
   const pressDigit = (digit) => {
     setPin((current) => {
       if (current.length >= PIN_LENGTH) return current;
       const next = current + digit;
       if (next.length === PIN_LENGTH) {
+        enableMotion();
         // mock: ใส่ครบ 6 หลักก็ปลดล็อก
         window.setTimeout(() => {
           setIsUnlocked(true);
@@ -215,7 +289,7 @@ function App() {
                     <span
                       key={s.i}
                       className="snake-seal"
-                      data-parity={s.i % 2}
+                      data-dir={s.dir}
                       style={{
                         left: `${s.x}%`,
                         top: `${s.y}%`,
@@ -223,7 +297,6 @@ function App() {
                         height: `${s.h}%`,
                         WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
                         maskImage: `url(/assets/seal-${s.i}.png)`,
-                        animationDelay: `-${(s.i * 0.55).toFixed(2)}s`,
                       }}
                     />
                   ))}
@@ -368,7 +441,7 @@ function App() {
                     <span
                       key={s.i}
                       className="snake-seal"
-                      data-parity={s.i % 2}
+                      data-dir={s.dir}
                       style={{
                         left: `${s.x}%`,
                         top: `${s.y}%`,
@@ -376,7 +449,6 @@ function App() {
                         height: `${s.h}%`,
                         WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
                         maskImage: `url(/assets/seal-${s.i}.png)`,
-                        animationDelay: `-${(s.i * 0.55).toFixed(2)}s`,
                       }}
                     />
                   ))}
