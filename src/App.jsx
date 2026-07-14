@@ -223,7 +223,7 @@ function App() {
                         height: `${s.h}%`,
                         WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
                         maskImage: `url(/assets/seal-${s.i}.png)`,
-                        animationDelay: `-${(s.i * 0.15).toFixed(2)}s`,
+                        animationDelay: `-${(s.i * 0.55).toFixed(2)}s`,
                       }}
                     />
                   ))}
@@ -376,7 +376,7 @@ function App() {
                         height: `${s.h}%`,
                         WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
                         maskImage: `url(/assets/seal-${s.i}.png)`,
-                        animationDelay: `-${(s.i * 0.15).toFixed(2)}s`,
+                        animationDelay: `-${(s.i * 0.55).toFixed(2)}s`,
                       }}
                     />
                   ))}
