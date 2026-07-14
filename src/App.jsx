@@ -211,8 +211,22 @@ function App() {
               <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  <span className="holo-seals-ghost" />
-                  <span className="holo-wave" />
+                  {SNAKE_SEALS.map((s) => (
+                    <span
+                      key={s.i}
+                      className="snake-seal"
+                      data-parity={s.i % 2}
+                      style={{
+                        left: `${s.x}%`,
+                        top: `${s.y}%`,
+                        width: `${s.w}%`,
+                        height: `${s.h}%`,
+                        WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
+                        maskImage: `url(/assets/seal-${s.i}.png)`,
+                        animationDelay: `-${(s.i * 0.15).toFixed(2)}s`,
+                      }}
+                    />
+                  ))}
                 </span>
               )}
               <img className="card-face card-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชน" />
@@ -350,8 +364,22 @@ function App() {
               <img className="expanded-face expanded-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชนขยาย" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  <span className="holo-seals-ghost" />
-                  <span className="holo-wave" />
+                  {SNAKE_SEALS.map((s) => (
+                    <span
+                      key={s.i}
+                      className="snake-seal"
+                      data-parity={s.i % 2}
+                      style={{
+                        left: `${s.x}%`,
+                        top: `${s.y}%`,
+                        width: `${s.w}%`,
+                        height: `${s.h}%`,
+                        WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
+                        maskImage: `url(/assets/seal-${s.i}.png)`,
+                        animationDelay: `-${(s.i * 0.15).toFixed(2)}s`,
+                      }}
+                    />
+                  ))}
                 </span>
               )}
               <img className="expanded-face expanded-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชนขยาย" />

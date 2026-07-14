@@ -705,39 +705,28 @@ a {
   mix-blend-mode: screen;
 }
 
-/* Always-visible faint ghost outlines of all 8 seals via combined mask. */
-.holo-seals-ghost {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  -webkit-mask-image: url(/assets/seals-mask.png);
-  mask-image: url(/assets/seals-mask.png);
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  background: rgba(255, 255, 255, 0.09);
-}
-
-/* background-position sweeps the 250%-wide gradient tile diagonally across the card.
-   Each seal is at a unique card coordinate, so it sees a different gradient slice —
-   the color wavefront propagates physically across the hologram surface (115° axis).
-   `alternate` reverses cleanly each cycle → no single-frame jump on loop reset. */
-@keyframes holo-wave-sweep {
+/* The 250%-wide gradient tile slides across each seal's own bbox. Because the two
+   parities sweep in opposite directions, adjacent seals appear to catch the light
+   from opposite sides — the organic alternating flicker of the real ThaiD foil. */
+@keyframes holo-sweep-fwd {
   from { background-position: 100% 100%; }
   to   { background-position:   0%   0%; }
 }
+@keyframes holo-sweep-rev {
+  from { background-position:   0%   0%; }
+  to   { background-position: 100% 100%; }
+}
 
-.holo-wave {
+/* Odd seals (index 0,2,4,6): 115° leading-Cyan → White glint → trailing-Magenta. */
+.snake-seal {
   position: absolute;
-  inset: 0;
   pointer-events: none;
-  -webkit-mask-image: url(/assets/seals-mask.png);
-  mask-image: url(/assets/seals-mask.png);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
   background-image: linear-gradient(
     115deg,
     rgba(255,   0, 127, 0.35)   0%,
@@ -748,7 +737,20 @@ a {
   );
   background-size: 250% 250%;
   background-repeat: no-repeat;
-  animation: holo-wave-sweep 5s ease-in-out alternate infinite;
+  animation: holo-sweep-fwd 5s ease-in-out alternate infinite;
+}
+
+/* Even seals (index 1,3,5,7): mirrored 295° axis, swept the opposite direction. */
+.snake-seal[data-parity="1"] {
+  background-image: linear-gradient(
+    295deg,
+    rgba(255,   0, 127, 0.35)   0%,
+    rgba(255,   0, 127, 0.40)  30%,
+    rgba(255, 255, 255, 0.90)  50%,
+    rgba(  0, 229, 255, 0.40)  70%,
+    rgba(  0, 229, 255, 0.35) 100%
+  );
+  animation-name: holo-sweep-rev;
 }
 
 /* ===== Splash screen ===== */
