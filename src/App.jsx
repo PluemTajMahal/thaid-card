@@ -25,6 +25,18 @@ const cardImages = {
   back: "/assets/id-card-back.png",
 };
 
+// ตรา 8 ดวง: ตำแหน่งกล่อง (% ของบัตร) + ทิศเส้นแสง (dir 0=ซ้าย→ขวา, 1=ขวา→ซ้าย)
+const SNAKE_SEALS = [
+  { i: 0, x: 0.0, y: 11.28, w: 5.53, h: 26.16, dir: 0 },
+  { i: 1, x: 15.57, y: 14.88, w: 20.02, h: 28.53, dir: 1 },
+  { i: 2, x: 39.45, y: 7.58, w: 17.88, h: 31.75, dir: 0 },
+  { i: 3, x: 72.61, y: 5.88, w: 19.85, h: 28.53, dir: 1 },
+  { i: 4, x: 57.75, y: 33.74, w: 19.9, h: 28.53, dir: 0 },
+  { i: 5, x: 35.65, y: 57.16, w: 19.9, h: 28.44, dir: 1 },
+  { i: 6, x: 58.53, y: 83.13, w: 17.11, h: 16.87, dir: 0 },
+  { i: 7, x: 9.15, y: 68.34, w: 17.88, h: 31.66, dir: 1 },
+];
+
 const services = [
   { icon: IdCard, label: "ตรวจสอบ\nคำขอ" },
   { icon: CheckSquare, label: "การรับรอง\nเอกสาร" },
@@ -96,16 +108,35 @@ function App() {
       tiltY = (event.clientY / window.innerHeight - 0.5) * 90;
     };
 
+    // rainbow เต็มสเปกตรัมในตราดวงเดียว (วน 0→360 ต่อเนื่องไม่มีรอยต่อ)
+    const stops = [];
+    for (let i = 0; i <= 12; i++) {
+      stops.push(`hsl(${i * 30}, 100%, 8%) ${((i / 12) * 100).toFixed(1)}%`);
+    }
+    const rainbow = `linear-gradient(100deg, ${stops.join(", ")})`;
+    // เส้นแสงอาทิตย์สะท้อนสีส้มอุ่น (ชั้นบนสุด)
+    const sheen =
+      "linear-gradient(100deg," +
+      " transparent 0%, rgba(255,140,20,0.06) 10%," +
+      " rgba(255,160,40,0.10) 28%, rgba(255,200,100,0.45) 44%," +
+      " rgba(255,255,220,0.65) 50%," +
+      " rgba(255,200,100,0.45) 56%, rgba(255,160,40,0.10) 72%," +
+      " rgba(255,140,20,0.02) 90%, transparent 100%)";
+    root.style.setProperty("--rainbow", rainbow);
+    root.style.setProperty("--sheen", sheen);
+
     let prev = 0;
     const loop = (ts) => {
       const dt = Math.min(ts - prev, 50);
       prev = ts;
       smX += (tiltX - smX) * (1 - Math.pow(0.93, dt / 16.67));
 
-      // แถบแสงเงิน-ฟ้า กวาดทั้งบัตรต่อเนื่อง (เลื่อนตามการเอียง)
-      // repeat-x ทำให้ค่า % วิ่งไปเรื่อยๆ ได้แบบไร้รอยต่อ ไม่ต้อง modulo
-      const band = ts * 0.02 + smX * 2.5;
-      root.style.setProperty("--band-pos", `${band}%`);
+      const flow = ts * 0.018 + smX * 2; // rainbow ไหลช้าๆ + เลื่อนเมื่อเอียง
+      const sheenPos = ts * 0.05 + smX * 3; // เส้นแสงวิ่ง + ขยับตามการเอียงชัดเจน
+      root.style.setProperty("--flow-fwd", `${flow}%`);
+      root.style.setProperty("--flow-rev", `${-flow}%`);
+      root.style.setProperty("--sheen-fwd", `${sheenPos}%`);
+      root.style.setProperty("--sheen-rev", `${-sheenPos}%`);
 
       raf = window.requestAnimationFrame(loop);
     };
@@ -254,7 +285,21 @@ function App() {
               <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  <span className="holo-band" />
+                  {SNAKE_SEALS.map((s) => (
+                    <span
+                      key={s.i}
+                      className="snake-seal"
+                      data-dir={s.dir}
+                      style={{
+                        left: `${s.x}%`,
+                        top: `${s.y}%`,
+                        width: `${s.w}%`,
+                        height: `${s.h}%`,
+                        WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
+                        maskImage: `url(/assets/seal-${s.i}.png)`,
+                      }}
+                    />
+                  ))}
                 </span>
               )}
               <img className="card-face card-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชน" />
@@ -392,7 +437,21 @@ function App() {
               <img className="expanded-face expanded-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชนขยาย" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  <span className="holo-band" />
+                  {SNAKE_SEALS.map((s) => (
+                    <span
+                      key={s.i}
+                      className="snake-seal"
+                      data-dir={s.dir}
+                      style={{
+                        left: `${s.x}%`,
+                        top: `${s.y}%`,
+                        width: `${s.w}%`,
+                        height: `${s.h}%`,
+                        WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
+                        maskImage: `url(/assets/seal-${s.i}.png)`,
+                      }}
+                    />
+                  ))}
                 </span>
               )}
               <img className="expanded-face expanded-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชนขยาย" />

@@ -692,49 +692,46 @@ a {
   text-shadow: 0 1px 6px rgba(255, 255, 255, 0.6);
 }
 
-/* ===== ตราโฮโลแกรม (Holographic emblem) =====
-   อ้างอิงจากคลิปบัตรจริง (kuy.mov): แถบแสงเงิน-ฟ้าลาเวนเดอร์ กว้างนุ่ม ทแยงมุม
-   กวาดผ่านทั้งบัตร โทนเย็น subtle — ไม่ใช่สีรุ้งสดหรือส้มอุ่น
-   mix-blend-mode อยู่ที่ container (ไม่มี mask) → ปลอดภัยกับ preserve-3d บน Safari */
+/* ===== ตราโฮโลแกรม (Holographic emblem) ===== */
+@property --holo-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
 .holo-wrap {
   position: absolute;
   inset: 0;
   pointer-events: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  mix-blend-mode: screen;
 }
 
-/* แถบแสงเต็มบัตร มาสก์ด้วยลายตราครุฑ 8 ดวง (seals-mask.png)
-   - ชั้นบน: แถบทแยง 108° เงิน→ลาเวนเดอร์-ขาว→ฟ้าเขียวจางๆ เลื่อนแนวนอนแบบ repeat-x
-   - ชั้นล่าง: เงินจางๆ คงที่ ให้ลายตราติดตาเบาๆ ตลอดเวลา */
-.holo-band {
+.snake-seal {
   position: absolute;
-  inset: 0;
   pointer-events: none;
-  -webkit-mask-image: url(/assets/seals-mask.png);
-  mask-image: url(/assets/seals-mask.png);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  background-image:
-    linear-gradient(
-      108deg,
-      transparent                0%,
-      rgba(150, 180, 255, 0.10) 30%,
-      rgba(200, 215, 255, 0.30) 43%,
-      rgba(236, 232, 255, 0.48) 50%,
-      rgba(190, 232, 235, 0.30) 57%,
-      rgba(150, 180, 255, 0.10) 70%,
-      transparent              100%
-    ),
-    linear-gradient(0deg, rgba(220, 228, 255, 0.07), rgba(220, 228, 255, 0.07));
-  background-size: 200% 100%, 100% 100%;
-  background-position: var(--band-pos, 0%) 0, 0 0;
-  background-repeat: repeat-x, no-repeat;
-  filter: saturate(1.3) brightness(1.08);
-  opacity: 0.85;
+  -webkit-mask-position: center;
+  mask-position: center;
+  background-image: var(--sheen), var(--rainbow, linear-gradient(100deg, #b03064, #b03064));
+  background-size: 220% 100%, 200% 100%;
+  background-position: var(--sheen-fwd, 0%) 0, var(--flow-fwd, 0%) 0;
+  background-repeat: repeat-x, repeat-x;
+  filter: saturate(2.5) contrast(1.5);
+  opacity: 0.25;
+}
+
+.snake-seal[data-dir="1"] {
+  background-position: var(--sheen-rev, 0%) 0, var(--flow-rev, 0%) 0;
+}
+
+@keyframes holo-spin {
+  to {
+    --holo-angle: 360deg;
+  }
 }
 
 /* ===== Splash screen ===== */
