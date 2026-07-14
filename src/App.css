@@ -692,49 +692,64 @@ a {
   text-shadow: 0 1px 6px rgba(255, 255, 255, 0.6);
 }
 
-/* ===== ตราโฮโลแกรม (Holographic emblem) =====
-   อ้างอิงจากคลิปบัตรจริง (kuy.mov): แถบแสงเงิน-ฟ้าลาเวนเดอร์ กว้างนุ่ม ทแยงมุม
-   กวาดผ่านทั้งบัตร โทนเย็น subtle — ไม่ใช่สีรุ้งสดหรือส้มอุ่น
-   mix-blend-mode อยู่ที่ container (ไม่มี mask) → ปลอดภัยกับ preserve-3d บน Safari */
+/* ===== ตราโฮโลแกรม (Holographic circular seals) =====
+   Wavefront 3 โทน: Magenta (หลังเส้นแสง) → White glint (บนเส้น) → Cyan (หน้าเส้น)
+   เลื่อน background-position ทแยงมุม ตราคี่/คู่กวาดคนละทิศ + stagger หน่วงเวลาไล่กัน
+   color-dodge อยู่ที่ .holo-wrap (ไม่มี mask) → เลี่ยง bug checkerboard บน Safari
+   preserve-3d ขณะยังได้ผล dodge เรืองแสงบนบัตร; opacity คุมให้อ่านบัตรใต้ได้ */
+@keyframes seal-sweep-fwd {
+  from { background-position:   0%   0%; }
+  to   { background-position: 100% 100%; }
+}
+@keyframes seal-sweep-rev {
+  from { background-position: 100% 100%; }
+  to   { background-position:   0%   0%; }
+}
+
 .holo-wrap {
   position: absolute;
   inset: 0;
   pointer-events: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  mix-blend-mode: screen;
+  mix-blend-mode: color-dodge;
+  opacity: 0.4;
 }
 
-/* แถบแสงเต็มบัตร มาสก์ด้วยลายตราครุฑ 8 ดวง (seals-mask.png)
-   - ชั้นบน: แถบทแยง 108° เงิน→ลาเวนเดอร์-ขาว→ฟ้าเขียวจางๆ เลื่อนแนวนอนแบบ repeat-x
-   - ชั้นล่าง: เงินจางๆ คงที่ ให้ลายตราติดตาเบาๆ ตลอดเวลา */
-.holo-band {
+/* ตราคี่ (0,2,4,6): กวาด 115° ซ้าย→ขวา (0%0% → 100%100%) */
+.snake-seal {
   position: absolute;
-  inset: 0;
   pointer-events: none;
-  -webkit-mask-image: url(/assets/seals-mask.png);
-  mask-image: url(/assets/seals-mask.png);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  background-image:
-    linear-gradient(
-      108deg,
-      transparent                0%,
-      rgba(150, 180, 255, 0.10) 30%,
-      rgba(200, 215, 255, 0.30) 43%,
-      rgba(236, 232, 255, 0.48) 50%,
-      rgba(190, 232, 235, 0.30) 57%,
-      rgba(150, 180, 255, 0.10) 70%,
-      transparent              100%
-    ),
-    linear-gradient(0deg, rgba(220, 228, 255, 0.07), rgba(220, 228, 255, 0.07));
-  background-size: 200% 100%, 100% 100%;
-  background-position: var(--band-pos, 0%) 0, 0 0;
-  background-repeat: repeat-x, no-repeat;
-  filter: saturate(1.3) brightness(1.08);
-  opacity: 0.85;
+  -webkit-mask-position: center;
+  mask-position: center;
+  background-image: linear-gradient(
+    115deg,
+    rgba(255,   0, 127, 0.45)   0%,
+    rgba(255,   0, 127, 0.25)  35%,
+    rgba(255, 255, 255, 0.95)  50%,
+    rgba(  0, 229, 255, 0.25)  65%,
+    rgba(  0, 229, 255, 0.40) 100%
+  );
+  background-size: 300% 300%;
+  background-repeat: no-repeat;
+  animation: seal-sweep-fwd 5s ease-in-out alternate infinite;
+}
+
+/* ตราคู่ (1,3,5,7): แกน 295° กวาดกลับทิศ ขวา→ซ้าย (100%100% → 0%0%) */
+.snake-seal[data-parity="1"] {
+  background-image: linear-gradient(
+    295deg,
+    rgba(255,   0, 127, 0.45)   0%,
+    rgba(255,   0, 127, 0.25)  35%,
+    rgba(255, 255, 255, 0.95)  50%,
+    rgba(  0, 229, 255, 0.25)  65%,
+    rgba(  0, 229, 255, 0.40) 100%
+  );
+  animation-name: seal-sweep-rev;
 }
 
 /* ===== Splash screen ===== */

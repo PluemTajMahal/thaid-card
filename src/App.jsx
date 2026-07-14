@@ -25,6 +25,18 @@ const cardImages = {
   back: "/assets/id-card-back.png",
 };
 
+// ตราครุฑ 8 ดวง: ตำแหน่งกล่อง (% ของบัตร) — index คู่/คี่ กำหนดทิศกวาดแสงสลับกัน
+const SNAKE_SEALS = [
+  { i: 0, x: 0.0, y: 11.28, w: 5.53, h: 26.16 },
+  { i: 1, x: 15.57, y: 14.88, w: 20.02, h: 28.53 },
+  { i: 2, x: 39.45, y: 7.58, w: 17.88, h: 31.75 },
+  { i: 3, x: 72.61, y: 5.88, w: 19.85, h: 28.53 },
+  { i: 4, x: 57.75, y: 33.74, w: 19.9, h: 28.53 },
+  { i: 5, x: 35.65, y: 57.16, w: 19.9, h: 28.44 },
+  { i: 6, x: 58.53, y: 83.13, w: 17.11, h: 16.87 },
+  { i: 7, x: 9.15, y: 68.34, w: 17.88, h: 31.66 },
+];
+
 const services = [
   { icon: IdCard, label: "ตรวจสอบ\nคำขอ" },
   { icon: CheckSquare, label: "การรับรอง\nเอกสาร" },
@@ -72,53 +84,6 @@ function App() {
     return () => window.clearTimeout(timer);
   }, []);
 
-  // เอฟเฟกต์ตราโฮโลแกรม: สีไหลเปลี่ยนต่อเนื่องเอง + เอียงเครื่องเร่ง/เลื่อนสี (เนียนด้วย lerp)
-  useEffect(() => {
-    if (!isUnlocked) return undefined;
-    const root = document.documentElement;
-    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
-
-    let tiltX = 0;
-    let tiltY = 0;
-    let smX = 0;
-    let smY = 0;
-    let raf = 0;
-
-    const onOrient = (event) => {
-      const gamma = clamp(event.gamma || 0, -45, 45);
-      const beta = clamp((event.beta || 0) - 45, -45, 45);
-      tiltX = (gamma / 45) * 90;
-      tiltY = (beta / 45) * 45;
-    };
-
-    const onPointer = (event) => {
-      tiltX = (event.clientX / window.innerWidth - 0.5) * 180;
-      tiltY = (event.clientY / window.innerHeight - 0.5) * 90;
-    };
-
-    let prev = 0;
-    const loop = (ts) => {
-      const dt = Math.min(ts - prev, 50);
-      prev = ts;
-      smX += (tiltX - smX) * (1 - Math.pow(0.93, dt / 16.67));
-
-      // แถบแสงเงิน-ฟ้า กวาดทั้งบัตรต่อเนื่อง (เลื่อนตามการเอียง)
-      // repeat-x ทำให้ค่า % วิ่งไปเรื่อยๆ ได้แบบไร้รอยต่อ ไม่ต้อง modulo
-      const band = ts * 0.02 + smX * 2.5;
-      root.style.setProperty("--band-pos", `${band}%`);
-
-      raf = window.requestAnimationFrame(loop);
-    };
-    raf = window.requestAnimationFrame(loop);
-
-    window.addEventListener("deviceorientation", onOrient);
-    window.addEventListener("pointermove", onPointer);
-    return () => {
-      window.cancelAnimationFrame(raf);
-      window.removeEventListener("deviceorientation", onOrient);
-      window.removeEventListener("pointermove", onPointer);
-    };
-  }, [isUnlocked]);
 
   useEffect(() => {
     const phone = document.querySelector(".phone");
@@ -254,7 +219,22 @@ function App() {
               <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  <span className="holo-band" />
+                  {SNAKE_SEALS.map((s) => (
+                    <span
+                      key={s.i}
+                      className="snake-seal"
+                      data-parity={s.i % 2}
+                      style={{
+                        left: `${s.x}%`,
+                        top: `${s.y}%`,
+                        width: `${s.w}%`,
+                        height: `${s.h}%`,
+                        WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
+                        maskImage: `url(/assets/seal-${s.i}.png)`,
+                        animationDelay: `-${(s.i * 0.18).toFixed(2)}s`,
+                      }}
+                    />
+                  ))}
                 </span>
               )}
               <img className="card-face card-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชน" />
@@ -392,7 +372,22 @@ function App() {
               <img className="expanded-face expanded-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชนขยาย" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  <span className="holo-band" />
+                  {SNAKE_SEALS.map((s) => (
+                    <span
+                      key={s.i}
+                      className="snake-seal"
+                      data-parity={s.i % 2}
+                      style={{
+                        left: `${s.x}%`,
+                        top: `${s.y}%`,
+                        width: `${s.w}%`,
+                        height: `${s.h}%`,
+                        WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
+                        maskImage: `url(/assets/seal-${s.i}.png)`,
+                        animationDelay: `-${(s.i * 0.18).toFixed(2)}s`,
+                      }}
+                    />
+                  ))}
                 </span>
               )}
               <img className="expanded-face expanded-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชนขยาย" />
