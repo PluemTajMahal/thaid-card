@@ -720,7 +720,7 @@ a {
   background-size: 220% 100%, 200% 100%;
   background-position: var(--sheen-fwd, 0%) 0, var(--flow-fwd, 0%) 0;
   background-repeat: repeat-x, repeat-x;
-  filter: saturate(2.5) contrast(1.5);
+  filter: saturate(0.85) contrast(1.15);
   opacity: 0.25;
 }
 
