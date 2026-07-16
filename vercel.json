@@ -13,14 +13,12 @@
       ]
     },
     {
-      "comment": "Vite build output is content-hashed → safe to cache forever",
       "source": "/assets/(.*)\\.(js|css|woff2)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
       ]
     },
     {
-      "comment": "Images use stable filenames and get overwritten → must revalidate",
       "source": "/assets/(.*)\\.(png|jpg|jpeg|gif|svg|webp|avif)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
