@@ -692,11 +692,14 @@ a {
   text-shadow: 0 1px 6px rgba(255, 255, 255, 0.6);
 }
 
-/* ===== ตราโฮโลแกรม (Holographic emblem) ===== */
-@property --holo-angle {
-  syntax: "<angle>";
-  inherits: false;
-  initial-value: 0deg;
+/* ===== ตราโฮโลแกรม (Holographic circular seals) =====
+   Wavefront เดียวเลื่อนข้ามบัตร (card-space): background-position 0%0%→100%100%
+   ทำให้ตราแต่ละดวงเปลี่ยนสีตามลำดับตอนแถบแสงผ่าน — Cyan(นำ)→White glint→Magenta(ตาม)
+   มาสก์ทั้งหมดด้วยลายตรา 8 ดวง (seals-mask.png) → แสง/สีไม่ล้นออกนอกลายตราเด็ดขาด
+   mix-blend-mode อยู่ที่ .holo-wrap (ไม่มี mask) → เลี่ยง checkerboard bug ของ Safari */
+@keyframes holo-wave-sweep {
+  from { background-position:   0%   0%; }
+  to   { background-position: 100% 100%; }
 }
 
 .holo-wrap {
@@ -705,33 +708,31 @@ a {
   pointer-events: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  mix-blend-mode: screen;
+  opacity: 0.6;
 }
 
-.snake-seal {
+.holo-wave {
   position: absolute;
+  inset: 0;
   pointer-events: none;
+  -webkit-mask-image: url(/assets/seals-mask.png);
+  mask-image: url(/assets/seals-mask.png);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  background-image: var(--sheen), var(--rainbow, linear-gradient(100deg, #b03064, #b03064));
-  background-size: 220% 100%, 200% 100%;
-  background-position: var(--sheen-fwd, 0%) 0, var(--flow-fwd, 0%) 0;
-  background-repeat: repeat-x, repeat-x;
-  filter: saturate(2.5) contrast(1.5);
-  opacity: 0.25;
-}
-
-.snake-seal[data-dir="1"] {
-  background-position: var(--sheen-rev, 0%) 0, var(--flow-rev, 0%) 0;
-}
-
-@keyframes holo-spin {
-  to {
-    --holo-angle: 360deg;
-  }
+  background-image: linear-gradient(
+    115deg,
+    rgba(255,   0, 127, 0.35)   0%,
+    rgba(255,   0, 127, 0.40)  30%,
+    rgba(255, 255, 255, 0.90)  50%,
+    rgba(  0, 229, 255, 0.40)  70%,
+    rgba(  0, 229, 255, 0.35) 100%
+  );
+  background-size: 250% 250%;
+  background-repeat: no-repeat;
+  animation: holo-wave-sweep 5s ease-in-out alternate infinite;
 }
 
 /* ===== Splash screen ===== */
