@@ -108,23 +108,22 @@ function App() {
       tiltY = (event.clientY / window.innerHeight - 0.5) * 90;
     };
 
-    // Wavefront รวมสี + แถบแสงขาวเป็น gradient เดียว เลื่อนพร้อมกัน (ล็อกกัน)
-    // แต่ละสีถูก "hold" ไว้ แล้วมีแถบแสงขาว (glint) คั่น จากนั้นสีถัดไปเริ่ม "หลังแถบ"
-    // → การเปลี่ยนสีเกิดหลังแถบแสงเสมอ, จบด้วยสีแรก (#FF007F) → repeat-x เนียนไม่มีรอยต่อ
-    const C = ["#FF007F", "#8A2BE2", "#00E5FF", "#39FF14", "#FFD700"];
-    const stops = [];
-    for (let i = 0; i < 5; i++) {
-      const s = i * 20;
-      const next = C[(i + 1) % 5];
-      stops.push(
-        `${C[i]} ${s}%`,        // สีปัจจุบัน (อยู่หน้าแถบถัดไป)
-        `${C[i]} ${s + 14}%`,   // hold สีไว้
-        `#FFFFFF ${s + 17}%`,   // แถบแสงขาว (glint band)
-        `${next} ${s + 20}%`,   // สีถัดไปเริ่มหลังแถบ (transition อยู่หลังแถบ)
-      );
-    }
-    const rainbow = `linear-gradient(100deg, ${stops.join(", ")})`;
+    // ไล่สีลูป 5 สี จบด้วยสีแรก (#FF007F) → เลื่อน repeat-x เนียนไม่มีรอยต่อ
+    // ชมพูอมม่วง → ม่วงสด → ฟ้าสด → เขียวนีออน → เหลืองทอง → วนกลับชมพูอมม่วง
+    const rainbow =
+      "linear-gradient(100deg," +
+      " #FF007F 0%, #8A2BE2 20%, #00E5FF 40%," +
+      " #39FF14 60%, #FFD700 80%, #FF007F 100%)";
+    // เส้นแสงอาทิตย์สะท้อนสีส้มอุ่น (ชั้นบนสุด)
+    const sheen =
+      "linear-gradient(100deg," +
+      " transparent 0%, rgba(255,140,20,0.06) 10%," +
+      " rgba(255,160,40,0.10) 28%, rgba(255,200,100,0.45) 44%," +
+      " rgba(255,255,220,0.65) 50%," +
+      " rgba(255,200,100,0.45) 56%, rgba(255,160,40,0.10) 72%," +
+      " rgba(255,140,20,0.02) 90%, transparent 100%)";
     root.style.setProperty("--rainbow", rainbow);
+    root.style.setProperty("--sheen", sheen);
 
     let prev = 0;
     const loop = (ts) => {
@@ -132,9 +131,12 @@ function App() {
       prev = ts;
       smX += (tiltX - smX) * (1 - Math.pow(0.93, dt / 16.67));
 
-      const flow = ts * 0.02 + smX * 2; // สี+แถบแสงไหลพร้อมกัน + เลื่อนเมื่อเอียง
+      const flow = ts * 0.018 + smX * 2; // rainbow ไหลช้าๆ + เลื่อนเมื่อเอียง
+      const sheenPos = ts * 0.05 + smX * 3; // เส้นแสงวิ่ง + ขยับตามการเอียงชัดเจน
       root.style.setProperty("--flow-fwd", `${flow}%`);
       root.style.setProperty("--flow-rev", `${-flow}%`);
+      root.style.setProperty("--sheen-fwd", `${sheenPos}%`);
+      root.style.setProperty("--sheen-rev", `${-sheenPos}%`);
 
       raf = window.requestAnimationFrame(loop);
     };
