@@ -108,12 +108,12 @@ function App() {
       tiltY = (event.clientY / window.innerHeight - 0.5) * 90;
     };
 
-    // rainbow เต็มสเปกตรัมในตราดวงเดียว (วน 0→360 ต่อเนื่องไม่มีรอยต่อ)
-    const stops = [];
-    for (let i = 0; i <= 12; i++) {
-      stops.push(`hsl(${i * 30}, 100%, 22%) ${((i / 12) * 100).toFixed(1)}%`);
-    }
-    const rainbow = `linear-gradient(100deg, ${stops.join(", ")})`;
+    // ไล่สีลูป 5 สี จบด้วยสีแรก (#FF007F) → เลื่อน repeat-x เนียนไม่มีรอยต่อ
+    // ชมพูอมม่วง → ม่วงสด → ฟ้าสด → เขียวนีออน → เหลืองทอง → วนกลับชมพูอมม่วง
+    const rainbow =
+      "linear-gradient(100deg," +
+      " #FF007F 0%, #8A2BE2 20%, #00E5FF 40%," +
+      " #39FF14 60%, #FFD700 80%, #FF007F 100%)";
     // เส้นแสงอาทิตย์สะท้อนสีส้มอุ่น (ชั้นบนสุด)
     const sheen =
       "linear-gradient(100deg," +
