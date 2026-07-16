@@ -21,9 +21,24 @@ import {
 import { useEffect, useState } from "react";
 
 const cardImages = {
-  front: "/assets/id-card-front.png",
+  front: "/assets/id-card-front-v2.png",
   back: "/assets/id-card-back.png",
 };
+
+// ตราโฮโลแกรม 8 ดวง กระจายทั้งบัตร (ใช้ตรา seal-emblem.png ดวงเดียวกันทุกจุด)
+// x/y = มุมซ้ายบน (% ของบัตร); W/H คงสัดส่วนตราไว้ไม่ให้ยืด (aspect ~0.955)
+const SEAL_W = 12;
+const SEAL_H = 20.06;
+const SEAL_SPOTS = [
+  { i: 0, x: -3.23, y: 14.33, dir: 0 },
+  { i: 1, x: 19.58, y: 19.11, dir: 1 },
+  { i: 2, x: 42.39, y: 13.42, dir: 0 },
+  { i: 3, x: 76.53, y: 10.11, dir: 1 },
+  { i: 4, x: 61.7, y: 37.97, dir: 0 },
+  { i: 5, x: 39.6, y: 61.35, dir: 1 },
+  { i: 6, x: 61.08, y: 81.53, dir: 0 },
+  { i: 7, x: 12.09, y: 74.14, dir: 1 },
+];
 
 const services = [
   { icon: IdCard, label: "ตรวจสอบ\nคำขอ" },
@@ -273,18 +288,21 @@ function App() {
               <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  <span
-                    className="snake-seal"
-                    data-dir="0"
-                    style={{
-                      left: "30%",
-                      top: "17%",
-                      width: "40%",
-                      height: "67%",
-                      WebkitMaskImage: "url(/assets/seal-emblem.png)",
-                      maskImage: "url(/assets/seal-emblem.png)",
-                    }}
-                  />
+                  {SEAL_SPOTS.map((s) => (
+                    <span
+                      key={s.i}
+                      className="snake-seal"
+                      data-dir={s.dir}
+                      style={{
+                        left: `${s.x}%`,
+                        top: `${s.y}%`,
+                        width: `${SEAL_W}%`,
+                        height: `${SEAL_H}%`,
+                        WebkitMaskImage: "url(/assets/seal-emblem.png)",
+                        maskImage: "url(/assets/seal-emblem.png)",
+                      }}
+                    />
+                  ))}
                 </span>
               )}
               <img className="card-face card-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชน" />
@@ -422,18 +440,21 @@ function App() {
               <img className="expanded-face expanded-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชนขยาย" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  <span
-                    className="snake-seal"
-                    data-dir="0"
-                    style={{
-                      left: "30%",
-                      top: "17%",
-                      width: "40%",
-                      height: "67%",
-                      WebkitMaskImage: "url(/assets/seal-emblem.png)",
-                      maskImage: "url(/assets/seal-emblem.png)",
-                    }}
-                  />
+                  {SEAL_SPOTS.map((s) => (
+                    <span
+                      key={s.i}
+                      className="snake-seal"
+                      data-dir={s.dir}
+                      style={{
+                        left: `${s.x}%`,
+                        top: `${s.y}%`,
+                        width: `${SEAL_W}%`,
+                        height: `${SEAL_H}%`,
+                        WebkitMaskImage: "url(/assets/seal-emblem.png)",
+                        maskImage: "url(/assets/seal-emblem.png)",
+                      }}
+                    />
+                  ))}
                 </span>
               )}
               <img className="expanded-face expanded-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชนขยาย" />
