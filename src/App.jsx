@@ -25,19 +25,16 @@ const cardImages = {
   back: "/assets/id-card-back.png",
 };
 
-// ตราโฮโลแกรม 8 ดวง กระจายทั้งบัตร (ใช้ตรา seal-emblem.png ดวงเดียวกันทุกจุด)
-// x/y = มุมซ้ายบน (% ของบัตร); W/H คงสัดส่วนตราไว้ไม่ให้ยืด (aspect ~0.955)
-const SEAL_W = 12;
-const SEAL_H = 20.06;
-const SEAL_SPOTS = [
-  { i: 0, x: -3.23, y: 14.33, dir: 0 },
-  { i: 1, x: 19.58, y: 19.11, dir: 1 },
-  { i: 2, x: 42.39, y: 13.42, dir: 0 },
-  { i: 3, x: 76.53, y: 10.11, dir: 1 },
-  { i: 4, x: 61.7, y: 37.97, dir: 0 },
-  { i: 5, x: 39.6, y: 61.35, dir: 1 },
-  { i: 6, x: 61.08, y: 81.53, dir: 0 },
-  { i: 7, x: 12.09, y: 74.14, dir: 1 },
+// ตรา 8 ดวง: ตำแหน่งกล่อง (% ของบัตร) + ทิศเส้นแสง (dir 0=ซ้าย→ขวา, 1=ขวา→ซ้าย)
+const SNAKE_SEALS = [
+  { i: 0, x: 0.0, y: 11.28, w: 5.53, h: 26.16, dir: 0 },
+  { i: 1, x: 15.57, y: 14.88, w: 20.02, h: 28.53, dir: 1 },
+  { i: 2, x: 39.45, y: 7.58, w: 17.88, h: 31.75, dir: 0 },
+  { i: 3, x: 72.61, y: 5.88, w: 19.85, h: 28.53, dir: 1 },
+  { i: 4, x: 57.75, y: 33.74, w: 19.9, h: 28.53, dir: 0 },
+  { i: 5, x: 35.65, y: 57.16, w: 19.9, h: 28.44, dir: 1 },
+  { i: 6, x: 58.53, y: 83.13, w: 17.11, h: 16.87, dir: 0 },
+  { i: 7, x: 9.15, y: 68.34, w: 17.88, h: 31.66, dir: 1 },
 ];
 
 const services = [
@@ -288,7 +285,7 @@ function App() {
               <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  {SEAL_SPOTS.map((s) => (
+                  {SNAKE_SEALS.map((s) => (
                     <span
                       key={s.i}
                       className="snake-seal"
@@ -296,10 +293,10 @@ function App() {
                       style={{
                         left: `${s.x}%`,
                         top: `${s.y}%`,
-                        width: `${SEAL_W}%`,
-                        height: `${SEAL_H}%`,
-                        WebkitMaskImage: "url(/assets/seal-emblem.png)",
-                        maskImage: "url(/assets/seal-emblem.png)",
+                        width: `${s.w}%`,
+                        height: `${s.h}%`,
+                        WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
+                        maskImage: `url(/assets/seal-${s.i}.png)`,
                       }}
                     />
                   ))}
@@ -440,7 +437,7 @@ function App() {
               <img className="expanded-face expanded-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชนขยาย" />
               {isUnlocked && (
                 <span className="holo-wrap" aria-hidden="true">
-                  {SEAL_SPOTS.map((s) => (
+                  {SNAKE_SEALS.map((s) => (
                     <span
                       key={s.i}
                       className="snake-seal"
@@ -448,10 +445,10 @@ function App() {
                       style={{
                         left: `${s.x}%`,
                         top: `${s.y}%`,
-                        width: `${SEAL_W}%`,
-                        height: `${SEAL_H}%`,
-                        WebkitMaskImage: "url(/assets/seal-emblem.png)",
-                        maskImage: "url(/assets/seal-emblem.png)",
+                        width: `${s.w}%`,
+                        height: `${s.h}%`,
+                        WebkitMaskImage: `url(/assets/seal-${s.i}.png)`,
+                        maskImage: `url(/assets/seal-${s.i}.png)`,
                       }}
                     />
                   ))}
