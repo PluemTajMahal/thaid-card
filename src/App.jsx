@@ -111,7 +111,7 @@ function App() {
     // rainbow เต็มสเปกตรัมในตราดวงเดียว (วน 0→360 ต่อเนื่องไม่มีรอยต่อ)
     const stops = [];
     for (let i = 0; i <= 12; i++) {
-      stops.push(`hsl(${i * 30}, 100%, 8%) ${((i / 12) * 100).toFixed(1)}%`);
+      stops.push(`hsl(${i * 30}, 100%, 22%) ${((i / 12) * 100).toFixed(1)}%`);
     }
     const rainbow = `linear-gradient(100deg, ${stops.join(", ")})`;
     // เส้นแสงอาทิตย์สะท้อนสีส้มอุ่น (ชั้นบนสุด)
