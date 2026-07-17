@@ -720,44 +720,13 @@ a {
   background-size: 220% 100%, 200% 100%;
   background-position: var(--sheen-fwd, 0%) 0, var(--flow-fwd, 0%) 0;
   background-repeat: repeat-x, repeat-x;
-  filter: saturate(var(--seal-sat, 0.45)) contrast(1.15);
-  opacity: var(--seal-opa, 0.4);
+  filter: saturate(0.5) contrast(1.15);
+  opacity: 0.4;
 }
 
 .snake-seal[data-dir="1"] {
   background-position: var(--sheen-rev, 0%) 0, var(--flow-rev, 0%) 0;
 }
-
-/* === DEV: แผงปรับค่าตรา realtime — ลบทั้งบล็อกนี้เมื่อได้ค่าที่ต้องการ === */
-.seal-tuner {
-  position: fixed;
-  top: 12px;
-  left: 12px;
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: rgba(20, 22, 40, 0.88);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(6px);
-}
-.seal-tuner label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.seal-tuner b {
-  color: #7fe0ff;
-}
-.seal-tuner input[type="range"] {
-  width: 180px;
-}
-/* === END DEV === */
 
 @keyframes holo-spin {
   to {

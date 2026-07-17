@@ -69,16 +69,6 @@ function App() {
   const [showPin, setShowPin] = useState(false);
   const [pin, setPin] = useState("");
 
-  // === DEV: ปรับค่าตรา realtime (ลบทั้งบล็อกนี้ + JSX .seal-tuner เมื่อได้ค่าที่ต้องการ) ===
-  const [sealSat, setSealSat] = useState(0.45);
-  const [sealOpa, setSealOpa] = useState(0.4);
-  useEffect(() => {
-    const r = document.documentElement;
-    r.style.setProperty("--seal-sat", String(sealSat));
-    r.style.setProperty("--seal-opa", String(sealOpa));
-  }, [sealSat, sealOpa]);
-  // === END DEV ===
-
   const PIN_LENGTH = 6;
 
   useEffect(() => {
@@ -254,21 +244,6 @@ function App() {
 
   return (
     <>
-    {/* === DEV: แผงปรับค่าตรา realtime — ลบทั้งบล็อกนี้เมื่อได้ค่าที่ต้องการ === */}
-    <div className="seal-tuner">
-      <label>
-        สีสด (saturate) <b>{sealSat.toFixed(2)}</b>
-        <input type="range" min="0" max="2" step="0.05" value={sealSat}
-          onChange={(e) => setSealSat(parseFloat(e.target.value))} />
-      </label>
-      <label>
-        ความเข้ม (opacity) <b>{sealOpa.toFixed(2)}</b>
-        <input type="range" min="0" max="1" step="0.05" value={sealOpa}
-          onChange={(e) => setSealOpa(parseFloat(e.target.value))} />
-      </label>
-    </div>
-    {/* === END DEV === */}
-
     {showSplash && (
       <div className="splash" role="status" aria-label="ThaiD">
         <img src="/assets/splash-full.png" alt="ThaiD" />
