@@ -470,10 +470,13 @@ function App() {
           >
             <RotateCcw size={42} />
           </button>
+          <div
+            className="expanded-card-zoom"
+            style={{ transform: `translate(-50%, -50%) scale(${zoomScale})` }}
+          >
           <button
             className={`expanded-card ${expandedSide === "back" ? "show-back" : ""}`}
             type="button"
-            style={{ transform: `translate(-50%, -50%) rotate(90deg) scale(${zoomScale})` }}
             aria-label="สลับด้านบัตรขยาย"
             aria-pressed={expandedSide === "back"}
             onClick={() => {
@@ -505,6 +508,7 @@ function App() {
               <img className="expanded-face expanded-back" src={cardImages.back} alt="ด้านหลังบัตรประชาชนขยาย" />
             </span>
           </button>
+          </div>
         </section>
       )}
 
