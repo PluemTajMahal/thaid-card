@@ -70,6 +70,7 @@ function App() {
   const [pin, setPin] = useState("");
   const [zoom, setZoom] = useState({ scale: 1, tx: 0, ty: 0 });
   const pinchRef = useRef(null);
+  const panRef = useRef(null);
   const zoomRef = useRef({ scale: 1, tx: 0, ty: 0 });
   const expandedRef = useRef(null);
   const wasPinchRef = useRef(false);
@@ -181,12 +182,16 @@ function App() {
 
     const onStart = (e) => {
       if (e.touches.length === 2) {
+        panRef.current = null;
         const t0 = e.touches[0], t1 = e.touches[1];
         pinchRef.current = {
           dist: Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY),
           midX: (t0.clientX + t1.clientX) / 2,
           midY: (t0.clientY + t1.clientY) / 2,
         };
+        e.preventDefault();
+      } else if (e.touches.length === 1 && zoomRef.current.scale > 1) {
+        panRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         e.preventDefault();
       }
     };
@@ -202,10 +207,16 @@ function App() {
         const { dist: prevDist, midX: prevMidX, midY: prevMidY } = pinchRef.current;
         const { scale: prevScale, tx: prevTx, ty: prevTy } = zoomRef.current;
 
-        // pan with finger midpoint movement, then scale around new midpoint
         const tempTx = prevTx + (midX - prevMidX);
         const tempTy = prevTy + (midY - prevMidY);
-        const newScale = Math.min(4, Math.max(0.5, prevScale * (dist / prevDist)));
+        const newScale = Math.min(4, Math.max(1, prevScale * (dist / prevDist)));
+        if (newScale === 1) {
+          zoomRef.current = { scale: 1, tx: 0, ty: 0 };
+          pinchRef.current = { dist, midX, midY };
+          wasPinchRef.current = true;
+          setZoom({ scale: 1, tx: 0, ty: 0 });
+          return;
+        }
         const ratio = newScale / prevScale;
         const cX = midX - window.innerWidth / 2;
         const cY = midY - window.innerHeight / 2;
@@ -216,10 +227,22 @@ function App() {
         pinchRef.current = { dist, midX, midY };
         wasPinchRef.current = true;
         setZoom({ scale: newScale, tx: newTx, ty: newTy });
+      } else if (e.touches.length === 1 && panRef.current) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - panRef.current.x;
+        const dy = e.touches[0].clientY - panRef.current.y;
+        const next = { ...zoomRef.current, tx: zoomRef.current.tx + dx, ty: zoomRef.current.ty + dy };
+        zoomRef.current = next;
+        panRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        wasPinchRef.current = true;
+        setZoom({ ...next });
       }
     };
 
-    const onEnd = () => { pinchRef.current = null; };
+    const onEnd = () => {
+      pinchRef.current = null;
+      panRef.current = null;
+    };
 
     el.addEventListener("touchstart", onStart, { passive: false });
     el.addEventListener("touchmove", onMove, { passive: false });
