@@ -522,6 +522,7 @@ a {
   overflow: hidden;
   background: rgba(0, 0, 0, 0.72);
   animation: overlay-in 210ms ease-out both;
+  touch-action: none;
 }
 
 .overlay-button {

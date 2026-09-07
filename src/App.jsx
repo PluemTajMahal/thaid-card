@@ -18,7 +18,7 @@ import {
   Settings2,
   UserRound,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const cardImages = {
   front: "/assets/id-card-front-v2.png",
@@ -68,6 +68,11 @@ function App() {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [showPin, setShowPin] = useState(false);
   const [pin, setPin] = useState("");
+  const [zoomScale, setZoomScale] = useState(1);
+  const pinchRef = useRef(null);
+  const zoomRef = useRef(1);
+  const expandedRef = useRef(null);
+  const wasPinchRef = useRef(false);
 
   const PIN_LENGTH = 6;
 
@@ -170,6 +175,43 @@ function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const el = expandedRef.current;
+    if (!el || !isExpanded) return undefined;
+
+    const onStart = (e) => {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        pinchRef.current = { dist: Math.hypot(dx, dy), scale: zoomRef.current };
+        e.preventDefault();
+      }
+    };
+
+    const onMove = (e) => {
+      if (e.touches.length === 2 && pinchRef.current) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const newScale = Math.min(4, Math.max(0.5, pinchRef.current.scale * (Math.hypot(dx, dy) / pinchRef.current.dist)));
+        zoomRef.current = newScale;
+        wasPinchRef.current = true;
+        setZoomScale(newScale);
+      }
+    };
+
+    const onEnd = () => { pinchRef.current = null; };
+
+    el.addEventListener("touchstart", onStart, { passive: false });
+    el.addEventListener("touchmove", onMove, { passive: false });
+    el.addEventListener("touchend", onEnd);
+    return () => {
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchmove", onMove);
+      el.removeEventListener("touchend", onEnd);
+    };
+  }, [isExpanded]);
+
   const openExpanded = () => {
     setExpandedSide(isFlipped ? "back" : "front");
     setIsExpanded(true);
@@ -177,6 +219,8 @@ function App() {
 
   const closeExpanded = () => {
     setIsExpanded(false);
+    setZoomScale(1);
+    zoomRef.current = 1;
   };
 
   const FLIP_MS = 1000; // เวลาหมุนบัตร 1 วินาที
@@ -414,7 +458,7 @@ function App() {
     </main>
 
       {isExpanded && (
-        <section className="expanded-view" aria-label="ขยายรูปบัตร">
+        <section className="expanded-view" aria-label="ขยายรูปบัตร" ref={expandedRef}>
           <button className="overlay-button close-button" type="button" aria-label="ปิด" onClick={closeExpanded}>
             <ChevronLeft size={54} />
           </button>
@@ -429,9 +473,13 @@ function App() {
           <button
             className={`expanded-card ${expandedSide === "back" ? "show-back" : ""}`}
             type="button"
+            style={{ transform: `translate(-50%, -50%) rotate(90deg) scale(${zoomScale})` }}
             aria-label="สลับด้านบัตรขยาย"
             aria-pressed={expandedSide === "back"}
-            onClick={rotateExpandedCard}
+            onClick={() => {
+              if (wasPinchRef.current) { wasPinchRef.current = false; return; }
+              rotateExpandedCard();
+            }}
           >
             <span className="expanded-card-inner">
               <img className="expanded-face expanded-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชนขยาย" />
