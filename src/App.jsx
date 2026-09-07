@@ -68,9 +68,9 @@ function App() {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [showPin, setShowPin] = useState(false);
   const [pin, setPin] = useState("");
-  const [zoomScale, setZoomScale] = useState(1);
+  const [zoom, setZoom] = useState({ scale: 1, tx: 0, ty: 0 });
   const pinchRef = useRef(null);
-  const zoomRef = useRef(1);
+  const zoomRef = useRef({ scale: 1, tx: 0, ty: 0 });
   const expandedRef = useRef(null);
   const wasPinchRef = useRef(false);
 
@@ -181,9 +181,12 @@ function App() {
 
     const onStart = (e) => {
       if (e.touches.length === 2) {
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        pinchRef.current = { dist: Math.hypot(dx, dy), scale: zoomRef.current };
+        const t0 = e.touches[0], t1 = e.touches[1];
+        pinchRef.current = {
+          dist: Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY),
+          midX: (t0.clientX + t1.clientX) / 2,
+          midY: (t0.clientY + t1.clientY) / 2,
+        };
         e.preventDefault();
       }
     };
@@ -191,12 +194,28 @@ function App() {
     const onMove = (e) => {
       if (e.touches.length === 2 && pinchRef.current) {
         e.preventDefault();
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        const newScale = Math.min(4, Math.max(0.5, pinchRef.current.scale * (Math.hypot(dx, dy) / pinchRef.current.dist)));
-        zoomRef.current = newScale;
+        const t0 = e.touches[0], t1 = e.touches[1];
+        const dist = Math.hypot(t1.clientX - t0.clientX, t1.clientY - t0.clientY);
+        const midX = (t0.clientX + t1.clientX) / 2;
+        const midY = (t0.clientY + t1.clientY) / 2;
+
+        const { dist: prevDist, midX: prevMidX, midY: prevMidY } = pinchRef.current;
+        const { scale: prevScale, tx: prevTx, ty: prevTy } = zoomRef.current;
+
+        // pan with finger midpoint movement, then scale around new midpoint
+        const tempTx = prevTx + (midX - prevMidX);
+        const tempTy = prevTy + (midY - prevMidY);
+        const newScale = Math.min(4, Math.max(0.5, prevScale * (dist / prevDist)));
+        const ratio = newScale / prevScale;
+        const cX = midX - window.innerWidth / 2;
+        const cY = midY - window.innerHeight / 2;
+        const newTx = cX * (1 - ratio) + tempTx * ratio;
+        const newTy = cY * (1 - ratio) + tempTy * ratio;
+
+        zoomRef.current = { scale: newScale, tx: newTx, ty: newTy };
+        pinchRef.current = { dist, midX, midY };
         wasPinchRef.current = true;
-        setZoomScale(newScale);
+        setZoom({ scale: newScale, tx: newTx, ty: newTy });
       }
     };
 
@@ -219,8 +238,8 @@ function App() {
 
   const closeExpanded = () => {
     setIsExpanded(false);
-    setZoomScale(1);
-    zoomRef.current = 1;
+    setZoom({ scale: 1, tx: 0, ty: 0 });
+    zoomRef.current = { scale: 1, tx: 0, ty: 0 };
   };
 
   const FLIP_MS = 1000; // เวลาหมุนบัตร 1 วินาที
@@ -472,7 +491,7 @@ function App() {
           </button>
           <div
             className="expanded-card-zoom"
-            style={{ transform: `translate(-50%, -50%) scale(${zoomScale})` }}
+            style={{ transform: `translate(calc(-50% + ${zoom.tx}px), calc(-50% + ${zoom.ty}px)) scale(${zoom.scale})` }}
           >
           <button
             className={`expanded-card ${expandedSide === "back" ? "show-back" : ""}`}
