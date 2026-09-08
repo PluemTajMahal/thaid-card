@@ -74,6 +74,8 @@ function App() {
   const zoomRef = useRef({ scale: 1, tx: 0, ty: 0 });
   const expandedRef = useRef(null);
   const wasPinchRef = useRef(false);
+  const lastTapRef = useRef(0);
+  const tapTimerRef = useRef(null);
 
   const PIN_LENGTH = 6;
 
@@ -259,6 +261,22 @@ function App() {
     setIsExpanded(true);
   };
 
+  const handleCardTap = () => {
+    const now = Date.now();
+    if (now - lastTapRef.current < 280) {
+      window.clearTimeout(tapTimerRef.current);
+      lastTapRef.current = 0;
+      if (isUnlocked) openExpanded();
+      return;
+    }
+    lastTapRef.current = now;
+    window.clearTimeout(tapTimerRef.current);
+    tapTimerRef.current = window.setTimeout(() => {
+      if (isUnlocked) flipCard();
+      else openPin();
+    }, 280);
+  };
+
   const closeExpanded = () => {
     setIsExpanded(false);
     setZoom({ scale: 1, tx: 0, ty: 0 });
@@ -365,7 +383,7 @@ function App() {
             type="button"
             aria-label={isUnlocked ? "สลับด้านบัตร" : "คลิกเพื่อแสดงข้อมูล"}
             aria-pressed={isFlipped}
-            onClick={() => (isUnlocked ? flipCard() : openPin())}
+            onClick={handleCardTap}
           >
             <span className="card-inner">
               <img className="card-face card-front" src={cardImages.front} alt="ด้านหน้าบัตรประชาชน" />
