@@ -871,3 +871,20 @@ a {
     transform: translateY(0);
   }
 }
+
+/* ios-safe-top-fix: กันพื้นที่ status bar/safe-area + overscroll โชว์สีขาว */
+html {
+  background: var(--blue);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top);
+  background: var(--blue);
+  z-index: 9999;
+  pointer-events: none;
+}
